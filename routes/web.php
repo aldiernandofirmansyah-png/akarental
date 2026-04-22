@@ -6,7 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganController;
 
 // ==================== HALAMAN DEPAN ====================
-Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/landing', [LandingController::class, 'index'])->name('landing');
 
 // ==================== ROUTE ADMIN ====================
 Route::prefix('admin')->group(function () {

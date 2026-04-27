@@ -255,7 +255,7 @@
             <div class="bg-blue-50 rounded-lg p-4">
                 <p class="text-sm font-semibold text-blue-700"><i class="fas fa-store mr-1"></i> Pengambilan Barang</p>
                 <p class="text-sm mt-1">Silakan datang ke toko kami:</p>
-                <p class="font-semibold mt-2">📍 Jl. Kampus No. 123 (Dekat Gerbang Utara Kampus)</p>
+                <p class="font-semibold mt-2">📍 Jl. Perkasa Blok 2 No.18 (Jodoh dekat rumah Kepin)</p>
                 <p class="text-sm">⏰ Jam Operasional: 08.00 - 20.00 WIB</p>
                 <p class="text-sm mt-2">📌 Jangan lupa membawa KTP asli untuk jaminan!</p>
             </div>

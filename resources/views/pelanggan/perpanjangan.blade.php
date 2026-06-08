@@ -1,7 +1,7 @@
 {{-- 
 =================================================================
  FILE: pelanggan/perpanjangan.blade.php
- FUNGSI: Halaman untuk pelanggan melakukan perpanjangan sewa
+ FUNGSI: Halaman pada pelanggan melakukan perpanjangan sewa
  FITUR: 
    - Informasi sewa saat ini
    - Pilih tanggal kembali baru

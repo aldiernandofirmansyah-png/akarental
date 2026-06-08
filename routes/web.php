@@ -1,23 +1,55 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\LandingController;
+use Illuminate\Support\Facades\Route;
 
 // ==================== HALAMAN DEPAN ====================
-Route::get('/landing', [LandingController::class, 'index'])->name('landing');
+// URL: /
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+// URL: /landing
+Route::get('/landing', [LandingController::class, 'index']);
 
-// ==================== ROUTE ADMIN ====================
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/data-pelanggan', [AdminController::class, 'dataPelanggan'])->name('admin.data_pelanggan');
-    Route::get('/riwayat-sewa', [AdminController::class, 'riwayatSewa'])->name('admin.riwayat_sewa');
+// ==================== REDIRECT DASHBOARD ====================
+// URL: /dashboard (Redirect otomatis sesuai role)
+Route::get('/dashboard', function () {
+    if (auth()->user()->role === 'admin') {
+        return redirect('/admin/dashboard');
+    }
+    return redirect('/pelanggan/dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// ==================== GROUP ADMIN ====================
+// Semua URL di bawah ini diawali dengan /admin/
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/admin/barang/store', [AdminController::class, 'storeBarang'])->name('admin.barang.store');
+    Route::put('/admin/barang/update/{id}', [AdminController::class, 'updateBarang'])->name('admin.barang.update');
+    Route::delete('/admin/barang/delete/{id}', [AdminController::class, 'destroyBarang'])->name('admin.barang.delete');
+    Route::get('/admin/data-pelanggan', [AdminController::class, 'dataPelanggan'])->name('admin.data_pelanggan');
+    Route::get('/admin/riwayat-sewa', [AdminController::class, 'riwayatSewa'])->name('admin.riwayat_sewa');
+    Route::put('/admin/sewa/konfirmasi-dp/{id}', [AdminController::class, 'konfirmasiDP'])->name('admin.sewa.konfirmasi_dp');
+    Route::put('/admin/sewa/mulai/{id}', [AdminController::class, 'mulaiSewa'])->name('admin.sewa.mulai');
+    Route::put('/admin/sewa/selesai/{id}', [AdminController::class, 'selesaiSewa'])->name('admin.sewa.selesai');
 });
 
-// ==================== ROUTE PELANGGAN ====================
-Route::prefix('pelanggan')->group(function () {
-    Route::get('/dashboard', [PelangganController::class, 'dashboard'])->name('pelanggan.dashboard');
-    Route::get('/riwayat-sewa', [PelangganController::class, 'riwayatSewa'])->name('pelanggan.riwayat_sewa');
-    Route::get('/perpanjangan/{id}', [PelangganController::class, 'perpanjangan'])->name('pelanggan.perpanjangan');
+// ==================== GROUP PELANGGAN ====================
+// Semua URL di bawah ini diawali dengan /pelanggan/
+Route::middleware(['auth', 'role:pelanggan'])->group(function () {
+    Route::get('/pelanggan/dashboard', [PelangganController::class, 'dashboard'])->name('pelanggan.dashboard');
+    Route::post('/pelanggan/booking/store', [PelangganController::class, 'storeBooking'])->name('pelanggan.booking.store');
+    Route::get('/pelanggan/riwayat-sewa', [PelangganController::class, 'riwayatSewa'])->name('pelanggan.riwayat_sewa');
+    Route::get('/pelanggan/perpanjangan/{id}', [PelangganController::class, 'perpanjangan'])->name('pelanggan.perpanjangan');
+    Route::post('/pelanggan/perpanjangan/{id}', [PelangganController::class, 'storePerpanjangan'])->name('pelanggan.perpanjangan.store');
 });
+
+// ==================== PROFILE (BREEZE) ====================
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

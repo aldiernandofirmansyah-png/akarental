@@ -19,8 +19,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'AKA Rental')</title>
     
-    {{-- Tailwind CSS CDN --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Tailwind CSS --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     {{-- Google Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -83,42 +83,52 @@
             <div class="flex justify-between items-center">
                 {{-- Logo dan Brand --}}
                 <div class="flex items-center space-x-2 md:space-x-3">
-                    <div>
-                        <span class="text-lg md:text-xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">AKA Rental</span>
-                        <p class="text-xs text-gray-500 hidden md:block">Sewa Kamera & Camping</p>
-                    </div>
+                    <a href="/" class="flex items-center space-x-2">
+                        <div>
+                            <span class="text-lg md:text-xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">AKA Rental</span>
+                            <p class="text-xs text-gray-500 hidden md:block">Sewa Kamera & Camping</p>
+                        </div>
+                    </a>
                 </div>
                 
-                {{-- Logout --}}
-                    {{-- Tombol Logout --}}
-                    <button onclick="logout()" class="bg-red-500 text-white px-3 md:px-4 py-1 md:py-2 rounded-lg hover:bg-red-600 transition text-sm md:text-base flex items-center gap-2">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="hidden md:inline">Logout</span>
-                    </button>
+                {{-- User Info & Logout --}}
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex flex-col items-end mr-2">
+                        <span class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest font-black">{{ Auth::user()->role }}</span>
+                    </div>
+
+                    {{-- Tombol Logout (Laravel Breeze style) --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="bg-red-500 text-white px-3 md:px-4 py-1 md:py-2 rounded-lg hover:bg-red-600 transition text-sm md:text-base flex items-center gap-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="hidden md:inline">Logout</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </nav>
 
     {{-- ==================== MAIN CONTENT WITH SIDEBAR ==================== --}}
-    <div class="flex flex-col md:flex-row">
+    <div class="flex flex-col md:flex-row min-h-[calc(100vh-70px)]">
         {{-- SIDEBAR KIRI (untuk desktop) --}}
-        <aside class="w-full md:w-64 bg-white shadow-lg min-h-screen">
+        <aside class="w-full md:w-64 bg-white shadow-lg">
             <div class="p-4">
                 {{-- Profile Summary Mobile --}}
                 <div class="md:hidden flex items-center space-x-3 pb-4 mb-4 border-b border-gray-200">
                     <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        A
+                        {{ substr(Auth::user()->name, 0, 1) }}
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-800" id="mobileUserName">Admin User</p>
-                        <p class="text-xs text-gray-500" id="mobileUserRole">Administrator</p>
+                        <p class="font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 uppercase">{{ Auth::user()->role }}</p>
                     </div>
                 </div>
                 
                 {{-- Menu Sidebar --}}
-                <ul class="space-y-2" id="sidebarMenu">
-                    {{-- Menu akan diisi oleh masing-masing halaman --}}
+                <ul class="space-y-2">
                     @yield('sidebar_menu')
                 </ul>
             </div>
@@ -126,68 +136,31 @@
 
         {{-- MAIN CONTENT AREA --}}
         <main class="flex-1 p-4 md:p-6 fade-in">
+            {{-- Alert Success --}}
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 shadow-sm rounded-r-lg flex items-center justify-between">
+                    <span><i class="fas fa-check-circle mr-2"></i> {{ session('success') }}</span>
+                    <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-700">&times;</button>
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>
 
-    {{-- ==================== SCRIPT UNTUK DEMO STATIS ==================== --}}
     <script>
-        // ========== FUNGSI NAVIGASI (STATIS) ==========
-        // Fungsi-fungsi ini untuk simulasi pindah halaman karena belum ada controller
-        
-        function logout() {
-            if(confirm('Yakin ingin logout?')) {
-                window.location.href = '/';
-            }
-        }
-        
-        // Navigasi Admin
-        function showAdminDashboard() {
-            window.location.href = '/admin/dashboard';
-        }
-        
-        function showDataPelanggan() {
-            window.location.href = '/admin/data-pelanggan';
-        }
-        
-        function showRiwayatSewaAdmin() {
-            window.location.href = '/admin/riwayat-sewa';
-        }
-        
-        // Navigasi Pelanggan
-        function showPelangganDashboard() {
-            window.location.href = '/pelanggan/dashboard';
-        }
-        
-        function showPelangganRiwayat() {
-            window.location.href = '/pelanggan/riwayat-sewa';
-        }
-        
-        function showPerpanjangan(id) {
-            window.location.href = '/pelanggan/perpanjangan/' + id;
-        }
-        
-        // ========== FUNGSI MODAL ==========
+        // Modal helpers
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
             document.getElementById(id).classList.add('flex');
+            document.body.style.overflow = 'hidden';
         }
         
         function closeModal(id) {
             document.getElementById(id).classList.add('hidden');
             document.getElementById(id).classList.remove('flex');
+            document.body.style.overflow = 'auto';
         }
-        
-        // Set user info (bisa diubah sesuai role)
-        function setUserInfo(name, role) {
-            document.getElementById('userName')?.innerText = name;
-            document.getElementById('userRole')?.innerText = role;
-            document.getElementById('mobileUserName')?.innerText = name;
-            document.getElementById('mobileUserRole')?.innerText = role;
-        }
-        
-        // Set user info default untuk demo
-        setUserInfo('Admin AKA', 'Administrator');
     </script>
 </body>
 </html>

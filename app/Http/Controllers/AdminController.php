@@ -11,22 +11,14 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        // Data statis untuk demo
-        $totalBarang = 25;
-        $totalKamera = 5;
-        $totalCamping = 15;
-        $totalPaket = 5;
-        $totalPelanggan = 5;
-        $totalPendapatan = 12500000;
-
-        $barangs = [
-            (object) ['id' => 1, 'nama_barang' => 'Kamera Canon EOS 200D', 'kategori' => 'Kamera', 'harga_sewa' => 150000, 'stok' => 3, 'deskripsi' => 'Kamera DSLR entry level', 'foto' => '/images/barang/canon.jpg'],
-            (object) ['id' => 2, 'nama_barang' => 'Kamera Sony A6400', 'kategori' => 'Kamera', 'harga_sewa' => 200000, 'stok' => 2, 'deskripsi' => 'Kamera mirrorless autofocus cepat', 'foto' => '/images/barang/sony.jpg'],
-            (object) ['id' => 3, 'nama_barang' => 'Tenda 2 Orang', 'kategori' => 'Alat Camping', 'harga_sewa' => 75000, 'stok' => 5, 'deskripsi' => 'Tenda kapasitas 2 orang anti air', 'foto' => '/images/barang/tenda.jpg'],
-            (object) ['id' => 4, 'nama_barang' => 'kompor', 'kategori' => 'Alat Camping', 'harga_sewa' => 35000, 'stok' => 10, 'deskripsi' => 'Kompor portable untuk camping', 'foto' => '/images/barang/kompor.jpg'],
-            (object) ['id' => 5, 'nama_barang' => 'Paket 1', 'kategori' => 'Paket', 'harga_sewa' => 350000, 'stok' => 2, 'deskripsi' => 'Paket hemat: Tenda + Sleeping Bag + Kompor + kursi', 'foto' => '/images/barang/paket.jpg'],
-            (object) ['id' => 6, 'nama_barang' => 'Paket 2', 'kategori' => 'Paket', 'harga_sewa' => 200000, 'stok' => 3, 'deskripsi' => 'Paket hemat: Tenda + Sleeping Bag + Kompor', 'foto' => '/images/barang/paket.jpg']
-        ];
+        $barangs = \App\Models\Barang::all();
+        
+        $totalBarang = $barangs->count();
+        $totalKamera = $barangs->where('kategori', 'Kamera')->count();
+        $totalCamping = $barangs->where('kategori', 'Alat Camping')->count();
+        $totalPaket = $barangs->where('kategori', 'Paket')->count();
+        $totalPelanggan = \App\Models\User::where('role', 'pelanggan')->count();
+        $totalPendapatan = \App\Models\Sewa::where('status_pembayaran', 'Lunas')->sum('total_biaya');
 
         return view('admin.dashboard_admin', compact(
             'totalBarang', 'totalKamera', 'totalCamping', 'totalPaket', 
@@ -35,15 +27,100 @@ class AdminController extends Controller
     }
 
     /**
+     * Simpan Barang Baru
+     */
+    public function storeBarang(Request $request)
+    {
+        $request->validate([
+            'nama_barang' => 'required',
+            'kategori' => 'required',
+            'harga_sewa' => 'required|numeric',
+            'stok' => 'required|numeric',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $nama_foto = time() . '_' . $foto->getClientOriginalName();
+            $foto->move(public_path('images/barang'), $nama_foto);
+            $data['foto'] = 'images/barang/' . $nama_foto;
+        }
+
+        \App\Models\Barang::create($data);
+
+        return redirect()->back()->with('success', 'Barang berhasil ditambahkan!');
+    }
+
+    /**
+     * Update Data Barang
+     */
+    public function updateBarang(Request $request, $id)
+    {
+        $barang = \App\Models\Barang::findOrFail($id);
+        
+        $request->validate([
+            'nama_barang' => 'required',
+            'kategori' => 'required',
+            'harga_sewa' => 'required|numeric',
+            'stok' => 'required|numeric',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($barang->foto && file_exists(public_path($barang->foto))) {
+                unlink(public_path($barang->foto));
+            }
+            
+            $foto = $request->file('foto');
+            $nama_foto = time() . '_' . $foto->getClientOriginalName();
+            $foto->move(public_path('images/barang'), $nama_foto);
+            $data['foto'] = 'images/barang/' . $nama_foto;
+        }
+
+        $barang->update($data);
+
+        return redirect()->back()->with('success', 'Barang berhasil diupdate!');
+    }
+
+    /**
+     * Hapus Barang
+     */
+    public function destroyBarang($id)
+    {
+        $barang = \App\Models\Barang::findOrFail($id);
+        
+        // Hapus foto jika ada
+        if ($barang->foto && file_exists(public_path($barang->foto))) {
+            unlink(public_path($barang->foto));
+        }
+        
+        $barang->delete();
+
+        return redirect()->back()->with('success', 'Barang berhasil dihapus!');
+    }
+
+    /**
      * Data Pelanggan
      */
     public function dataPelanggan()
     {
-        $pelanggans = [
-            (object) ['id' => 1, 'name' => 'Neymar Junior', 'email' => 'neymar@email.com', 'no_telp' => '081234567890', 'alamat' => 'Jl. Brasil No. 10', 'booking_aktif' => true, 'total_bayar' => 450000, 'denda' => 0],
-            (object) ['id' => 2, 'name' => 'Lionel Messi', 'email' => 'messi@email.com', 'no_telp' => '081234567891', 'alamat' => 'Jl. Argentina No. 5', 'booking_aktif' => true, 'total_bayar' => 300000, 'denda' => 25000],
-            (object) ['id' => 3, 'name' => 'Mesut Ozil', 'email' => 'ozil@email.com', 'no_telp' => '081234567892', 'alamat' => 'Jl. Jerman No. 15', 'booking_aktif' => false, 'total_bayar' => 600000, 'denda' => 0],
-        ];
+        $pelanggans = \App\Models\User::where('role', 'pelanggan')
+            ->withSum(['sewas as total_bayar' => function($query) {
+                $query->where('status_pembayaran', 'Lunas');
+            }], 'total_biaya')
+            ->withSum('sewas as denda', 'denda')
+            ->get()
+            ->map(function($user) {
+                $user->booking_aktif = \App\Models\Sewa::where('user_id', $user->id)
+                    ->whereIn('status_sewa', ['Booking', 'Aktif'])
+                    ->exists();
+                return $user;
+            });
 
         return view('admin.data_pelanggan', compact('pelanggans'));
     }
@@ -53,11 +130,52 @@ class AdminController extends Controller
      */
     public function riwayatSewa()
     {
-        $riwayatSewa = [
-            (object) ['id' => 1, 'pelanggan' => 'Neymar Junior', 'barang' => 'Kamera Canon EOS 200D', 'tanggal_sewa' => '2026-04-10', 'tanggal_kembali' => '2026-04-13', 'status' => 'Aktif', 'total' => 450000],
-            (object) ['id' => 2, 'pelanggan' => 'Mesut Ozil', 'barang' => 'Tenda 4 Orang', 'tanggal_sewa' => '2026-04-05', 'tanggal_kembali' => '2026-04-08', 'status' => 'Selesai', 'total' => 225000],
-        ];
+        $riwayatSewa = \App\Models\Sewa::with(['user', 'barang'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.riwayat_sewa_pelanggan', compact('riwayatSewa'));
+    }
+
+    /**
+     * Konfirmasi Pembayaran DP
+     */
+    public function konfirmasiDP($id)
+    {
+        $sewa = \App\Models\Sewa::findOrFail($id);
+        $sewa->update(['status_pembayaran' => 'DP Dibayar']);
+
+        return redirect()->back()->with('success', 'Pembayaran DP berhasil dikonfirmasi!');
+    }
+
+    /**
+     * Mulai Sewa (Barang Diambil)
+     */
+    public function mulaiSewa($id)
+    {
+        $sewa = \App\Models\Sewa::findOrFail($id);
+        $sewa->update(['status_sewa' => 'Aktif']);
+
+        return redirect()->back()->with('success', 'Sewa telah dimulai, barang telah diambil!');
+    }
+
+    /**
+     * Selesai Sewa (Barang Kembali)
+     */
+    public function selesaiSewa(Request $request, $id)
+    {
+        $sewa = \App\Models\Sewa::findOrFail($id);
+        
+        // Hitung denda jika ada (input manual dari admin atau otomatis)
+        $denda = $request->denda ?? 0;
+
+        $sewa->update([
+            'status_sewa' => 'Selesai',
+            'status_pembayaran' => 'Lunas',
+            'sisa_bayar' => 0,
+            'denda' => $denda
+        ]);
+
+        return redirect()->back()->with('success', 'Sewa selesai dan pembayaran telah lunas!');
     }
 }

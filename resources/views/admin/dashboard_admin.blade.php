@@ -108,7 +108,7 @@
     </div>
 
     {{-- Card Total Pendapatan --}}
-    <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-5 shadow-lg text-white card-hover lg:col-span-2 xl:col-span-1">
+    <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-5 shadow-lg text-white card-hover xl:col-span-1">
         <div class="flex items-center justify-between mb-3">
             <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
                 <i class="fas fa-wallet text-white text-xl"></i>
@@ -122,24 +122,24 @@
 </div>
 
 {{-- ==================== MAIN DATA TABLE ==================== --}}
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50/30">
         <h2 class="text-xl font-bold text-gray-800 flex items-center">
             <span class="w-2 h-8 bg-purple-600 rounded-full mr-3"></span>
             Daftar Barang Tersedia
         </h2>
-        <div class="relative hidden sm:block">
+        <div class="relative w-full sm:w-64">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
                 <i class="fas fa-search text-gray-400"></i>
             </span>
-            <input type="text" id="searchBarang" onkeyup="filterBarang()" class="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all text-sm w-64" placeholder="Cari barang...">
+            <input type="text" id="searchBarang" onkeyup="filterBarang()" class="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all text-sm w-full" placeholder="Cari barang...">
         </div>
     </div>
     
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse" id="barangTable">
             <thead>
-                <tr class="bg-gray-50/50 text-gray-600 uppercase text-xs font-bold tracking-wider">
+                <tr class="bg-gray-50/50 text-gray-500 uppercase text-[10px] font-bold tracking-widest border-b border-gray-100">
                     <th class="px-6 py-4">ID</th>
                     <th class="px-6 py-4">Info Barang</th>
                     <th class="px-6 py-4">Kategori</th>
@@ -148,12 +148,12 @@
                     <th class="px-6 py-4 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-50">
                 @foreach($barangs as $barang)
-                <tr class="hover:bg-purple-50/30 transition-colors duration-200 group">
-                    <td class="px-6 py-4 font-bold text-gray-400">#{{ str_pad($barang->id, 3, '0', STR_PAD_LEFT) }}</td>
+                <tr class="hover:bg-gray-50/50 transition-colors duration-200 group">
+                    <td class="px-6 py-4 font-bold text-gray-300 text-xs">#{{ str_pad($barang->id, 3, '0', STR_PAD_LEFT) }}</td>
                     <td class="px-6 py-4">
-                        <div class="flex items-center">
+                        <div class="flex items-center min-w-[200px]">
                             <div class="h-12 w-12 flex-shrink-0 rounded-xl overflow-hidden shadow-sm border-2 border-white group-hover:border-purple-200 transition-all">
                                 @if(!empty($barang->foto) && file_exists(public_path($barang->foto)))
                                     <img src="{{ asset($barang->foto) }}" class="h-full w-full object-cover">
@@ -165,7 +165,7 @@
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-bold text-gray-800">{{ $barang->nama_barang }}</div>
-                                <div class="text-xs text-gray-500 truncate w-48">{{ Str::limit($barang->deskripsi, 40) }}</div>
+                                <div class="text-[11px] text-gray-400 mt-0.5 line-clamp-1">{{ $barang->deskripsi }}</div>
                             </div>
                         </div>
                     </td>
@@ -182,31 +182,31 @@
                                 default => 'fas fa-gift'
                             };
                         @endphp
-                        <span class="px-3 py-1.5 rounded-lg text-xs font-bold border {{ $catClass }} flex items-center w-fit">
+                        <span class="px-3 py-1.5 rounded-lg text-[10px] font-black border {{ $catClass }} flex items-center w-fit uppercase tracking-wider">
                             <i class="{{ $catIcon }} mr-1.5"></i> {{ $barang->kategori }}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <span class="text-sm font-bold text-gray-700">Rp {{ number_format($barang->harga_sewa,0,',','.') }}</span>
-                        <span class="text-[10px] block text-gray-400 font-medium italic">/ hari</span>
+                        <div class="text-sm font-bold text-gray-700">Rp{{ number_format($barang->harga_sewa,0,',','.') }}</div>
+                        <div class="text-[10px] text-gray-400 font-medium italic">per hari</div>
                     </td>
                     <td class="px-6 py-4 text-center">
                         <div class="flex flex-col items-center">
-                            <span class="px-2.5 py-1 rounded-md text-xs font-bold {{ $barang->stok > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }}">
-                                {{ $barang->stok }} Unit
+                            <span class="px-2.5 py-1 rounded-lg text-[10px] font-black {{ $barang->stok > 0 ? 'bg-green-50 text-green-600' : 'bg-rose-50 text-rose-600' }}">
+                                {{ $barang->stok }} UNIT
                             </span>
                             @if($barang->stok <= 2 && $barang->stok > 0)
-                                <span class="text-[10px] text-orange-500 font-bold mt-1">Hampir Habis!</span>
+                                <span class="text-[9px] text-orange-500 font-bold mt-1 animate-pulse uppercase">Limit!</span>
                             @endif
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="flex justify-center space-x-2">
-                            <button onclick="editBarang({{ $barang->id }}, '{{ $barang->nama_barang }}', '{{ $barang->kategori }}', '{{ $barang->deskripsi }}', {{ $barang->harga_sewa }}, {{ $barang->stok }})" class="p-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-600 hover:text-white transition-all duration-300 shadow-sm" title="Edit">
-                                <i class="fas fa-pen-to-square"></i>
+                        <div class="flex justify-center items-center gap-2">
+                            <button onclick="editBarang({{ $barang->id }}, '{{ $barang->nama_barang }}', '{{ $barang->kategori }}', '{{ $barang->deskripsi }}', {{ $barang->harga_sewa }}, {{ $barang->stok }})" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-sm border border-amber-100" title="Edit">
+                                <i class="fas fa-pen-to-square text-xs"></i>
                             </button>
-                            <button onclick="hapusBarang({{ $barang->id }})" class="p-2 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-600 hover:text-white transition-all duration-300 shadow-sm" title="Hapus">
-                                <i class="fas fa-trash-can"></i>
+                            <button onclick="hapusBarang({{ $barang->id }})" class="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all duration-300 shadow-sm border border-rose-100" title="Hapus">
+                                <i class="fas fa-trash-can text-xs"></i>
                             </button>
                         </div>
                     </td>

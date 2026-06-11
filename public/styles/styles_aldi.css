@@ -1,3 +1,4 @@
+/* Style custom aldi - direset agar tidak merusak layout */
 h1 {
-    color:red;
+    /* color: red; */ /* Dinonaktifkan karena merusak estetika dashboard */
 }

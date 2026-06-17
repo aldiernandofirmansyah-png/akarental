@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\Sewa;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
@@ -26,42 +28,52 @@ class PelangganController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_mulai',
-            'jumlah' => 'required|numeric|min:1',
+            'jumlah' => 'required|integer|min:1',
+            'no_telp' => 'required|string|max:20',
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
-        
-        // Hitung durasi hari
-        $mulai = new \DateTime($request->tanggal_mulai);
-        $kembali = new \DateTime($request->tanggal_kembali);
-        $diff = $mulai->diff($kembali)->days;
-        $hari = $diff == 0 ? 1 : $diff;
+        return DB::transaction(function () use ($request) {
+            $user = Auth::user();
+            
+            // Update no_telp user jika berbeda
+            if ($user->no_telp !== $request->no_telp) {
+                $user->update(['no_telp' => $request->no_telp]);
+            }
 
-        $total_biaya = $hari * $barang->harga_sewa * $request->jumlah;
-        $dp_amount = $total_biaya * 0.3; // DP 30%
-        $sisa_bayar = $total_biaya - $dp_amount;
+            $barang = Barang::findOrFail($request->barang_id);
+            
+            // Hitung durasi hari
+            $mulai = new \DateTime($request->tanggal_mulai);
+            $kembali = new \DateTime($request->tanggal_kembali);
+            $diff = $mulai->diff($kembali)->days;
+            $hari = $diff == 0 ? 1 : $diff;
 
-        // Simpan ke database
-        $sewa = Sewa::create([
-            'user_id' => auth()->id(),
-            'barang_id' => $request->barang_id,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_kembali' => $request->tanggal_kembali,
-            'jumlah' => $request->jumlah,
-            'total_biaya' => $total_biaya,
-            'dp_amount' => $dp_amount,
-            'sisa_bayar' => $sisa_bayar,
-            'status_pembayaran' => 'Menunggu DP',
-            'status_sewa' => 'Booking',
-        ]);
+            $total_harga = $hari * $barang->harga_sewa * $request->jumlah;
+            $dp_amount = $total_harga * 0.3; // DP 30%
+            $sisa_bayar = $total_harga - $dp_amount;
 
-        return response()->json([
-            'success' => true,
-            'booking_id' => $sewa->id,
-            'total_biaya' => $total_biaya,
-            'dp_amount' => $dp_amount,
-            'sisa_bayar' => $sisa_bayar
-        ]);
+            // Simpan ke database
+            $sewa = Sewa::create([
+                'user_id' => $user->id,
+                'barang_id' => $request->barang_id,
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_kembali' => $request->tanggal_kembali,
+                'jumlah' => $request->jumlah,
+                'total_biaya' => $total_harga,
+                'dp_amount' => $dp_amount,
+                'sisa_bayar' => $sisa_bayar,
+                'status_pembayaran' => 'Menunggu DP',
+                'status_sewa' => 'Booking',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'booking_id' => $sewa->id,
+                'total_biaya' => $total_harga,
+                'dp_amount' => $dp_amount,
+                'sisa_bayar' => $sisa_bayar
+            ]);
+        });
     }
 
     /**
@@ -69,7 +81,11 @@ class PelangganController extends Controller
      */
     public function riwayatSewa()
     {
-        $riwayatSaya = Sewa::with('barang')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
+        $riwayatSaya = Sewa::with('barang')
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
         return view('pelanggan.riwayat_sewa', compact('riwayatSaya'));
     }
 
@@ -78,7 +94,7 @@ class PelangganController extends Controller
      */
     public function perpanjangan($id)
     {
-        $sewa = Sewa::with('barang')->findOrFail($id);
+        $sewa = Sewa::with('barang')->where('user_id', Auth::id())->findOrFail($id);
         $dendaPerHari = 20000;
 
         return view('pelanggan.perpanjangan', compact('sewa', 'dendaPerHari'));
@@ -89,26 +105,27 @@ class PelangganController extends Controller
      */
     public function storePerpanjangan(Request $request, $id)
     {
+        $sewa = Sewa::with('barang')->where('user_id', Auth::id())->findOrFail($id);
+
         $request->validate([
-            'tanggal_kembali_baru' => 'required|date|after:tanggal_kembali_lama',
+            'tanggal_kembali_baru' => 'required|date|after:' . $sewa->tanggal_kembali,
         ]);
 
-        $sewa = Sewa::with('barang')->findOrFail($id);
-        
-        // Hitung selisih hari tambahan
-        $lama = new \DateTime($sewa->tanggal_kembali);
-        $baru = new \DateTime($request->tanggal_kembali_baru);
-        $hariTambahan = $lama->diff($baru)->days;
+        DB::transaction(function () use ($request, $sewa) {
+            // Hitung selisih hari tambahan
+            $lama = new \DateTime($sewa->tanggal_kembali);
+            $baru = new \DateTime($request->tanggal_kembali_baru);
+            $hariTambahan = $lama->diff($baru)->days;
 
-        $biayaTambahan = $hariTambahan * $sewa->barang->harga_sewa;
+            $biayaTambahan = $hariTambahan * $sewa->barang->harga_sewa;
 
-        // Update data sewa
-        $sewa->update([
-            'tanggal_kembali' => $request->tanggal_kembali_baru,
-            'total_biaya' => $sewa->total_biaya + $biayaTambahan,
-            'sisa_bayar' => $sewa->sisa_bayar + $biayaTambahan,
-            // Status kembali ke Booking jika sebelumnya mungkin sudah dianggap telat/selesai (opsional sesuai kebijakan)
-        ]);
+            // Update data sewa
+            $sewa->update([
+                'tanggal_kembali' => $request->tanggal_kembali_baru,
+                'total_biaya' => $sewa->total_biaya + $biayaTambahan,
+                'sisa_bayar' => $sewa->sisa_bayar + $biayaTambahan,
+            ]);
+        });
 
         return redirect()->route('pelanggan.riwayat_sewa')->with('success', 'Sewa berhasil diperpanjang!');
     }

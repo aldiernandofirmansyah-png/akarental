@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
 // ==================== HALAMAN DEPAN ====================
@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 // URL: /landing
 Route::get('/landing', [LandingController::class, 'index']);
+
+// ==================== LOGIN ADMIN (Halaman Khusus) ====================
+Route::get('/admin-login', [AuthenticatedSessionController::class, 'createAdmin'])->name('admin.login')->middleware('guest');
+Route::post('/admin-login', [AuthenticatedSessionController::class, 'store'])->name('admin.login.submit')->middleware('guest');
 
 // ==================== REDIRECT DASHBOARD ====================
 // URL: /dashboard (Redirect otomatis sesuai role)
@@ -46,10 +50,6 @@ Route::middleware(['auth', 'role:pelanggan'])->group(function () {
 });
 
 // ==================== PROFILE (BREEZE) ====================
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Fitur profile telah dinonaktifkan karena tidak digunakan.
 
 require __DIR__.'/auth.php';

@@ -68,13 +68,13 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-[11px] space-y-1">
-                            <div class="flex justify-between"><span>Total:</span> <span class="font-bold">Rp{{ number_format($item->total_biaya,0,',','.') }}</span></div>
+                            <div class="flex justify-between"><span>Total:</span> <span class="font-bold">Rp{{ number_format($item->total_harga,0,',','.') }}</span></div>
                             <div class="flex justify-between text-yellow-600"><span>DP:</span> <span class="font-bold">Rp{{ number_format($item->dp_amount,0,',','.') }}</span></div>
                             <div class="flex justify-between text-purple-600 border-t pt-1"><span>Sisa:</span> <span class="font-bold">Rp{{ number_format($item->sisa_bayar,0,',','.') }}</span></div>
-                            @if($item->denda > 0)
+                            @if($item->total_denda > 0)
                                 <div class="flex justify-between text-rose-600 font-bold bg-rose-50 px-1 rounded">
                                     <span>Denda:</span>
-                                    <span>+Rp{{ number_format($item->denda,0,',','.') }}</span>
+                                    <span>+Rp{{ number_format($item->total_denda,0,',','.') }}</span>
                                 </div>
                             @endif
                         </div>

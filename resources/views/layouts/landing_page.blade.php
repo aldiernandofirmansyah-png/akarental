@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { font-family: 'Inter', sans-serif; }
+        body { font-size: 1.05rem; }
         
         /* Background khusus untuk Hero Section (atas) */
         .hero-bg {
@@ -71,11 +72,6 @@
                     <a href="#home" class="text-gray-700 hover:text-blue-600 transition font-medium">Beranda</a>
                     <a href="#keunggulan" class="text-gray-700 hover:text-blue-600 transition font-medium">Keunggulan</a>
                     <a href="#kontak" class="text-gray-700 hover:text-blue-600 transition font-medium">Hubungi Kami</a>
-                    
-                    <button onclick="openModal('adminModal')" 
-                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2">
-                        <i class="fas fa-user-shield"></i> Login Admin
-                    </button>
                 </div>
                 
                 <button id="mobileMenuBtn" class="md:hidden text-2xl"><i class="fas fa-bars"></i></button>
@@ -100,14 +96,21 @@
                 </p>
 
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="openModal('pelangganModal')" 
-                        class="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
-                        <i class="fas fa-user"></i> Login Pelanggan
-                    </button>
-                    <button onclick="openModal('registerModal')" 
-                        class="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition shadow-lg flex items-center gap-2">
-                        <i class="fas fa-user-plus"></i> Daftar Sekarang
-                    </button>
+                    @auth
+                        <a href="{{ route('dashboard') }}" 
+                            class="bg-purple-600 text-white px-10 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg flex items-center gap-2">
+                            <i class="fas fa-tachometer-alt"></i> Masuk ke Dashboard
+                        </a>
+                    @else
+                        <button onclick="openModal('pelangganModal')" 
+                            class="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
+                            <i class="fas fa-user"></i> Login Pelanggan
+                        </button>
+                        <button onclick="openModal('registerModal')" 
+                            class="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition shadow-lg flex items-center gap-2">
+                            <i class="fas fa-user-plus"></i> Daftar Sekarang
+                        </button>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -184,28 +187,6 @@
         </div>
     </footer>
 
-    {{-- ==================== MODAL LOGIN ADMIN ==================== --}}
-    <div id="adminModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[60]">
-        <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%] shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-2"><i class="fas fa-user-shield text-purple-600 text-2xl"></i><h2 class="text-2xl font-bold text-gray-800">Login Admin</h2></div>
-                <button onclick="closeModal('adminModal')" class="text-gray-400 text-2xl hover:text-gray-600">&times;</button>
-            </div>
-            <form action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-tight">EMAIL ADMIN</label>
-                    <input type="text" name="login" placeholder="masukan email admin" class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-tight">PASSWORD</label>
-                    <input type="password" name="password" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none transition-all">
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg font-bold shadow-lg shadow-purple-200 uppercase tracking-widest">Masuk</button>
-            </form>
-        </div>
-    </div>
-
     {{-- ==================== MODAL LOGIN PELANGGAN ==================== --}}
     <div id="pelangganModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[60]">
         <div class="bg-white rounded-2xl p-8 w-96 max-w-[90%] shadow-2xl">
@@ -220,7 +201,7 @@
                     <input type="text" name="login" placeholder="masukan email anda" class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-tight">PASSWORD</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-tight">KATA SANDI</label>
                     <input type="password" name="password" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-bold shadow-lg shadow-blue-200 uppercase tracking-widest">Masuk</button>
@@ -248,30 +229,16 @@
                         <input type="text" name="name" placeholder="Aldi Kepin" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Alamat Email</label>
                         <input type="email" name="email" placeholder="aldi@gmail.com" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nomor WhatsApp</label>
-                            <input type="text" name="no_telp" placeholder="0812..." class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Username</label>
-                            <input type="text" name="username" placeholder="akuser" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Alamat Lengkap</label>
-                        <textarea name="alamat" rows="2" placeholder="Jl. Contoh No. 123" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all resize-none" required></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Kata Sandi</label>
                             <input type="password" name="password" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Konfirmasi</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Konfirmasi Kata Sandi</label>
                             <input type="password" name="password_confirmation" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                         </div>
                     </div>

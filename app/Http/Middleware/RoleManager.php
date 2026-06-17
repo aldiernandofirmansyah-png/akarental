@@ -14,15 +14,17 @@ class RoleManager
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role): Response
+    public function handle(Request $request, Closure $next, string $role): Response
     {
         if (!Auth::check()) {
             return redirect()->route('landing');
         }
 
         if (Auth::user()->role !== $role) {
-            // Jika role tidak sesuai, paksa kembali ke landing
-            return redirect()->route('landing');
+            // Jika role tidak sesuai, arahkan ke dashboard masing-masing atau landing
+            return auth()->user()->role === 'admin' 
+                ? redirect()->route('admin.dashboard') 
+                : redirect()->route('pelanggan.dashboard');
         }
 
         return $next($request);

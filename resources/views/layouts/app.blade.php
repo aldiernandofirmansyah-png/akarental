@@ -44,6 +44,7 @@
     
     <style>
         * { font-family: 'Inter', sans-serif; }
+        body { font-size: 1.05rem; }
         
         /* Active sidebar menu */
         .sidebar-active {
@@ -103,7 +104,7 @@
                         </div>
                         <div class="hidden sm:block">
                             <span class="text-xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-tighter">AKA RENTAL</span>
-                            <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold -mt-1">Premium Equipment</p>
+                            <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold -mt-1">Peralatan Premium</p>
                         </div>
                     </a>
                 </div>
@@ -119,7 +120,7 @@
                         @csrf
                         <button type="submit" class="bg-gray-50 text-gray-700 px-4 py-2 rounded-xl hover:bg-red-50 hover:text-red-600 transition-all duration-300 text-sm font-bold flex items-center gap-2 border border-gray-100">
                             <i class="fas fa-power-off text-xs"></i>
-                            <span class="hidden sm:inline uppercase tracking-wider">Logout</span>
+                            <span class="hidden sm:inline uppercase tracking-wider">Keluar</span>
                         </button>
                     </form>
                 </div>
@@ -154,7 +155,7 @@
                         <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Status Sistem</p>
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
-                            <span class="text-xs font-bold">Server Online</span>
+                            <span class="text-xs font-bold">Server Aktif</span>
                         </div>
                     </div>
                 </div>

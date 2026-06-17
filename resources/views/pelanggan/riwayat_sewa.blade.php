@@ -82,13 +82,13 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 font-bold text-gray-700 text-sm">
-                        Rp {{ number_format($item->total_biaya,0,',','.') }}
+                        Rp {{ number_format($item->total_harga,0,',','.') }}
                     </td>
                     <td class="px-6 py-4">
-                        @if($item->denda > 0)
+                        @if($item->total_denda > 0)
                             <div class="flex flex-col">
-                                <span class="text-rose-600 font-bold text-sm">Rp {{ number_format($item->denda,0,',','.') }}</span>
-                                <span class="text-[9px] text-rose-400 italic">({{ $item->denda / 20000 }} hari telat)</span>
+                                <span class="text-rose-600 font-bold text-sm">Rp {{ number_format($item->total_denda,0,',','.') }}</span>
+                                <span class="text-[9px] text-rose-400 italic">({{ $item->total_denda / 20000 }} hari telat)</span>
                             </div>
                         @else
                             <span class="text-gray-400 text-sm">-</span>

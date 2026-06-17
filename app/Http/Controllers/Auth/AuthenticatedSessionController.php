@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,6 +21,14 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
+     * Display the admin login view.
+     */
+    public function createAdmin(): View
+    {
+        return view('auth.admin-login');
+    }
+
+    /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
@@ -28,14 +37,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Paksa redirect berdasarkan role tanpa menggunakan intended()
-        // agar tidak tersangkut di URL admin yang mungkin pernah diklik
         $user = Auth::user();
+        
+        // Redirect berdasarkan role
         if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
+            return redirect()->intended(route('admin.dashboard'));
         }
 
-        return redirect()->route('pelanggan.dashboard');
+        return redirect()->intended(route('pelanggan.dashboard'));
     }
 
     /**

@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
+use App\Models\Sewa;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
@@ -11,14 +16,14 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $barangs = \App\Models\Barang::all();
+        $barangs = Barang::all();
         
         $totalBarang = $barangs->count();
         $totalKamera = $barangs->where('kategori', 'Kamera')->count();
         $totalCamping = $barangs->where('kategori', 'Alat Camping')->count();
         $totalPaket = $barangs->where('kategori', 'Paket')->count();
-        $totalPelanggan = \App\Models\User::where('role', 'pelanggan')->count();
-        $totalPendapatan = \App\Models\Sewa::where('status_pembayaran', 'Lunas')->sum('total_biaya');
+        $totalPelanggan = User::where('role', 'pelanggan')->count();
+        $totalPendapatan = Sewa::sum('total_biaya');
 
         return view('admin.dashboard_admin', compact(
             'totalBarang', 'totalKamera', 'totalCamping', 'totalPaket', 
@@ -31,24 +36,22 @@ class AdminController extends Controller
      */
     public function storeBarang(Request $request)
     {
-        $request->validate([
-            'nama_barang' => 'required',
-            'kategori' => 'required',
-            'harga_sewa' => 'required|numeric',
-            'stok' => 'required|numeric',
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori' => 'required|string',
+            'harga_sewa' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-
-        $data = $request->all();
 
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $nama_foto = time() . '_' . $foto->getClientOriginalName();
             $foto->move(public_path('images/barang'), $nama_foto);
-            $data['foto'] = 'images/barang/' . $nama_foto;
+            $validated['foto'] = 'images/barang/' . $nama_foto;
         }
 
-        \App\Models\Barang::create($data);
+        Barang::create($validated);
 
         return redirect()->back()->with('success', 'Barang berhasil ditambahkan!');
     }
@@ -58,31 +61,29 @@ class AdminController extends Controller
      */
     public function updateBarang(Request $request, $id)
     {
-        $barang = \App\Models\Barang::findOrFail($id);
+        $barang = Barang::findOrFail($id);
         
-        $request->validate([
-            'nama_barang' => 'required',
-            'kategori' => 'required',
-            'harga_sewa' => 'required|numeric',
-            'stok' => 'required|numeric',
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori' => 'required|string',
+            'harga_sewa' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->all();
-
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
-            if ($barang->foto && file_exists(public_path($barang->foto))) {
-                unlink(public_path($barang->foto));
+            if ($barang->foto && File::exists(public_path($barang->foto))) {
+                File::delete(public_path($barang->foto));
             }
             
             $foto = $request->file('foto');
             $nama_foto = time() . '_' . $foto->getClientOriginalName();
             $foto->move(public_path('images/barang'), $nama_foto);
-            $data['foto'] = 'images/barang/' . $nama_foto;
+            $validated['foto'] = 'images/barang/' . $nama_foto;
         }
 
-        $barang->update($data);
+        $barang->update($validated);
 
         return redirect()->back()->with('success', 'Barang berhasil diupdate!');
     }
@@ -92,11 +93,11 @@ class AdminController extends Controller
      */
     public function destroyBarang($id)
     {
-        $barang = \App\Models\Barang::findOrFail($id);
+        $barang = Barang::findOrFail($id);
         
         // Hapus foto jika ada
-        if ($barang->foto && file_exists(public_path($barang->foto))) {
-            unlink(public_path($barang->foto));
+        if ($barang->foto && File::exists(public_path($barang->foto))) {
+            File::delete(public_path($barang->foto));
         }
         
         $barang->delete();
@@ -109,14 +110,12 @@ class AdminController extends Controller
      */
     public function dataPelanggan()
     {
-        $pelanggans = \App\Models\User::where('role', 'pelanggan')
-            ->withSum(['sewas as total_bayar' => function($query) {
-                $query->where('status_pembayaran', 'Lunas');
-            }], 'total_biaya')
-            ->withSum('sewas as denda', 'denda')
+        $pelanggans = User::where('role', 'pelanggan')
+            ->withSum('sewas as total_bayar', 'total_biaya')
+            ->withSum('sewas as total_denda', 'denda')
             ->get()
             ->map(function($user) {
-                $user->booking_aktif = \App\Models\Sewa::where('user_id', $user->id)
+                $user->booking_aktif = Sewa::where('user_id', $user->id)
                     ->whereIn('status_sewa', ['Booking', 'Aktif'])
                     ->exists();
                 return $user;
@@ -130,7 +129,7 @@ class AdminController extends Controller
      */
     public function riwayatSewa()
     {
-        $riwayatSewa = \App\Models\Sewa::with(['user', 'barang'])
+        $riwayatSewa = Sewa::with(['user', 'barang'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -142,7 +141,7 @@ class AdminController extends Controller
      */
     public function konfirmasiDP($id)
     {
-        $sewa = \App\Models\Sewa::findOrFail($id);
+        $sewa = Sewa::findOrFail($id);
         $sewa->update(['status_pembayaran' => 'DP Dibayar']);
 
         return redirect()->back()->with('success', 'Pembayaran DP berhasil dikonfirmasi!');
@@ -153,8 +152,23 @@ class AdminController extends Controller
      */
     public function mulaiSewa($id)
     {
-        $sewa = \App\Models\Sewa::findOrFail($id);
-        $sewa->update(['status_sewa' => 'Aktif']);
+        try {
+            DB::transaction(function () use ($id) {
+                $sewa = Sewa::findOrFail($id);
+                
+                // Cek stok sebelum mulai
+                if ($sewa->barang->stok < $sewa->jumlah) {
+                    throw new \Exception('Stok barang tidak mencukupi untuk memulai sewa!');
+                }
+
+                $sewa->update(['status_sewa' => 'Aktif']);
+                
+                // Kurangi stok barang
+                $sewa->barang->decrement('stok', $sewa->jumlah);
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Sewa telah dimulai, barang telah diambil!');
     }
@@ -164,17 +178,22 @@ class AdminController extends Controller
      */
     public function selesaiSewa(Request $request, $id)
     {
-        $sewa = \App\Models\Sewa::findOrFail($id);
-        
-        // Hitung denda jika ada (input manual dari admin atau otomatis)
-        $denda = $request->denda ?? 0;
+        DB::transaction(function () use ($request, $id) {
+            $sewa = Sewa::findOrFail($id);
+            
+            // Hitung denda jika ada (input manual dari admin atau otomatis)
+            $denda = $request->denda ?? 0;
 
-        $sewa->update([
-            'status_sewa' => 'Selesai',
-            'status_pembayaran' => 'Lunas',
-            'sisa_bayar' => 0,
-            'denda' => $denda
-        ]);
+            $sewa->update([
+                'status_sewa' => 'Selesai',
+                'status_pembayaran' => 'Lunas',
+                'sisa_bayar' => 0,
+                'denda' => $denda
+            ]);
+
+            // Tambahkan kembali stok barang
+            $sewa->barang->increment('stok', $sewa->jumlah);
+        });
 
         return redirect()->back()->with('success', 'Sewa selesai dan pembayaran telah lunas!');
     }

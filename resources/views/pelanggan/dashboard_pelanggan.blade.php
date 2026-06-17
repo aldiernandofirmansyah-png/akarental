@@ -55,8 +55,7 @@
         </div>
     </div>
     <div class="flex gap-3 mt-4">
-        <button onclick="filterBarang()" class="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700"><i class="fas fa-search mr-1"></i> Cari</button>
-        <button onclick="resetFilter()" class="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600"><i class="fas fa-undo mr-1"></i> Reset</button>
+        <button onclick="resetFilter()" class="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600"><i class="fas fa-undo mr-1"></i> Reset Filter</button>
     </div>
 </div>
 
@@ -81,13 +80,13 @@
                 <div class="text-center">
                     @if($barang->kategori == 'Kamera')
                         <i class="fas fa-camera text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @elseif($barang->kategori == 'Alat Camping')
                         <i class="fas fa-campground text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @else
                         <i class="fas fa-gift text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @endif
                 </div>
             @endif
@@ -162,7 +161,7 @@
                 <div class="space-y-3">
                     <div><label class="block text-xs font-semibold mb-1">Nama Lengkap</label><input type="text" value="{{ auth()->user()->name }}" class="w-full border rounded-lg px-3 py-2 text-sm bg-gray-100 cursor-not-allowed" readonly></div>
                     <div><label class="block text-xs font-semibold mb-1">Email</label><input type="email" value="{{ auth()->user()->email }}" class="w-full border rounded-lg px-3 py-2 text-sm bg-gray-100 cursor-not-allowed" readonly></div>
-                    <div><label class="block text-xs font-semibold mb-1">No. Handphone (WhatsApp)</label><input type="tel" value="{{ auth()->user()->no_telp ?? '-' }}" class="w-full border rounded-lg px-3 py-2 text-sm bg-gray-100 cursor-not-allowed" readonly></div>
+                    <div><label class="block text-xs font-semibold mb-1">No. Handphone (WhatsApp) <span class="text-red-500">*</span></label><input type="tel" id="bookingNoTelp" value="{{ auth()->user()->no_telp }}" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: 08123456789" required></div>
                 </div>
             </div>
             
@@ -282,6 +281,16 @@ function openBookingModal(id, nama, harga) {
     currentHarga = harga;
     currentBarangNama = nama;
     
+    // Set minimum date to today
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let minDate = yyyy + '-' + mm + '-' + dd;
+    
+    document.getElementById('tanggalMulai').setAttribute('min', minDate);
+    document.getElementById('tanggalKembali').setAttribute('min', minDate);
+    
     // Reset inputs
     document.getElementById('tanggalMulai').value = '';
     document.getElementById('tanggalKembali').value = '';
@@ -292,23 +301,35 @@ function openBookingModal(id, nama, harga) {
 }
 
 function hitungTotal() {
-    let mulai = document.getElementById('tanggalMulai').value;
-    let kembali = document.getElementById('tanggalKembali').value;
+    let mulaiInput = document.getElementById('tanggalMulai');
+    let kembaliInput = document.getElementById('tanggalKembali');
+    let mulai = mulaiInput.value;
+    let kembali = kembaliInput.value;
+    
+    // Pastikan tanggal kembali tidak sebelum tanggal mulai
+    if (mulai) {
+        kembaliInput.setAttribute('min', mulai);
+    }
+
     let jumlah = parseInt(document.getElementById('jumlahBooking').value) || 1;
     let totalSewa = currentHarga * jumlah;
     
     if(mulai && kembali) {
         let diffTime = new Date(kembali) - new Date(mulai);
         let hari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if(hari > 0) totalSewa = hari * currentHarga * jumlah;
+        if(hari > 0) {
+            totalSewa = hari * currentHarga * jumlah;
+        } else if (hari === 0) {
+            totalSewa = 1 * currentHarga * jumlah; // Minimal 1 hari
+        }
     }
     
     let dpAmount = totalSewa * DP_PERCENT;
     let sisaBayar = totalSewa - dpAmount;
     
-    document.getElementById('totalBiayaBooking').innerText = 'Rp ' + totalSewa.toLocaleString('id-ID');
-    document.getElementById('dpAmount').innerText = 'Rp ' + dpAmount.toLocaleString('id-ID');
-    document.getElementById('sisaBayar').innerText = 'Rp ' + sisaBayar.toLocaleString('id-ID');
+    document.getElementById('totalBiayaBooking').innerText = 'Rp ' + Math.round(totalSewa).toLocaleString('id-ID');
+    document.getElementById('dpAmount').innerText = 'Rp ' + Math.round(dpAmount).toLocaleString('id-ID');
+    document.getElementById('sisaBayar').innerText = 'Rp ' + Math.round(sisaBayar).toLocaleString('id-ID');
 }
 
 function bookingSelesai() {
@@ -316,33 +337,53 @@ function bookingSelesai() {
     let mulai = document.getElementById('tanggalMulai').value;
     let kembali = document.getElementById('tanggalKembali').value;
     let jumlah = document.getElementById('jumlahBooking').value;
-    
-    let totalSewaTxt = document.getElementById('totalBiayaBooking').innerText;
-    let dpTxt = document.getElementById('dpAmount').innerText;
-    let sisaTxt = document.getElementById('sisaBayar').innerText;
+    let noTelp = document.getElementById('bookingNoTelp').value;
     
     if(!mulai || !kembali) {
         alert('Harap isi tanggal sewa!');
         return;
     }
 
+    if(!noTelp) {
+        alert('Harap isi nomor WhatsApp!');
+        return;
+    }
+
+    // Tampilkan loading state jika perlu
+    const submitBtn = document.querySelector('#bookingModal button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...';
+
     // Kirim data ke server via AJAX
-    fetch('{{ route('pelanggan.booking.store') }}', {
+    fetch('{{ route("pelanggan.booking.store") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
         },
         body: JSON.stringify({
             barang_id: barangId,
             tanggal_mulai: mulai,
             tanggal_kembali: kembali,
-            jumlah: jumlah
+            jumlah: jumlah,
+            no_telp: noTelp
         })
     })
-    .then(response => response.json())
+    .then(async response => {
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message || 'Terjadi kesalahan pada server');
+        }
+        return data;
+    })
     .then(data => {
         if(data.success) {
+            let totalSewaTxt = 'Rp ' + Math.round(data.total_biaya).toLocaleString('id-ID');
+            let dpTxt = 'Rp ' + Math.round(data.dp_amount).toLocaleString('id-ID');
+            let sisaTxt = 'Rp ' + Math.round(data.sisa_bayar).toLocaleString('id-ID');
+
             document.getElementById('detailBarang').innerText = currentBarangNama;
             document.getElementById('detailTotal').innerText = totalSewaTxt;
             document.getElementById('detailDP').innerText = dpTxt;
@@ -352,6 +393,7 @@ function bookingSelesai() {
                           `Saya ingin konfirmasi booking (ID: #AK${1000 + data.booking_id}):%0A` +
                           `----------------------------------%0A` +
                           `👤 Nama: {{ auth()->user()->name }}%0A` +
+                          `📞 No. WA: ${noTelp}%0A` +
                           `📦 Barang: ${currentBarangNama}%0A` +
                           `📅 Periode: ${mulai} s/d ${kembali}%0A` +
                           `💰 Total Sewa: ${totalSewaTxt}%0A` +
@@ -365,18 +407,29 @@ function bookingSelesai() {
             closeModal('bookingModal');
             openModal('konfirmasiModal');
         } else {
-            alert('Gagal membuat booking. Silakan coba lagi.');
+            alert('Gagal membuat booking: ' + (data.message || 'Silakan coba lagi.'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan koneksi.');
+        alert('Gagal: ' + error.message);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
     });
 }
 
 document.getElementById('tanggalMulai')?.addEventListener('change', hitungTotal);
 document.getElementById('tanggalKembali')?.addEventListener('change', hitungTotal);
 document.getElementById('jumlahBooking')?.addEventListener('change', hitungTotal);
+
+function resetFilter() {
+    document.getElementById('kategoriFilter').value = 'semua';
+    document.getElementById('paketFilter').value = 'semua';
+    document.getElementById('cariBarang').value = '';
+    filterBarang();
+}
 
 function filterBarang() {
     let kategori = document.getElementById('kategoriFilter').value;
@@ -408,11 +461,12 @@ function filterBarang() {
 }
 
 // Tambahkan event listener agar pencarian bisa dilakukan sambil mengetik (real-time)
-document.getElementById('cariBarang').addEventListener('keyup', filterBarang);
-document.getElementById('kategoriFilter').addEventListener('change', filterBarang);
-document.getElementById('paketFilter').addEventListener('change', filterBarang);
+document.getElementById('cariBarang')?.addEventListener('keyup', filterBarang);
+document.getElementById('kategoriFilter')?.addEventListener('change', filterBarang);
+document.getElementById('paketFilter')?.addEventListener('change', filterBarang);
 
-function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+// Gunakan fungsi dari layout agar tidak bentrok
+// function openModal(id) { ... }
+// function closeModal(id) { ... }
 </script>
 @endsection

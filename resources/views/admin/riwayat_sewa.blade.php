@@ -22,6 +22,7 @@
                     <th class="px-6 py-4">Pelanggan</th>
                     <th class="px-6 py-4">Barang (Kode)</th>
                     <th class="px-6 py-4">Total Biaya</th>
+                    <th class="px-6 py-4">Denda</th>
                     <th class="px-6 py-4">Status</th>
                 </tr>
             </thead>
@@ -32,6 +33,7 @@
                     <td class="px-6 py-4 font-bold text-gray-800">{{ $item->user->name }}</td>
                     <td class="px-6 py-4">{{ $item->barang->nama_barang }} <span class="text-purple-600 font-bold">({{ $item->kode_barang_fisik }})</span></td>
                     <td class="px-6 py-4 font-bold text-gray-800">Rp{{ number_format($item->total_biaya,0,',','.') }}</td>
+                    <td class="px-6 py-4 font-bold text-red-600">Rp{{ number_format($item->denda,0,',','.') }}</td>
                     <td class="px-6 py-4 text-emerald-600 font-bold text-xs uppercase">{{ $item->status_sewa }}</td>
                 </tr>
                 @endforeach

@@ -169,7 +169,7 @@
             <div class="bg-gray-50 rounded-lg p-3 mb-4">
                 <p class="text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-calendar-alt mr-1"></i> Detail Sewa</p>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs font-semibold mb-1">Tanggal Mulai <span class="text-red-500">*</span></label><input type="date" id="tanggalMulai" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
+                    <div><label class="block text-xs font-semibold mb-1">Tanggal Mulai <span class="text-red-500">*</span></label><input type="date" id="tanggalMulai" min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
                     <div><label class="block text-xs font-semibold mb-1">Tanggal Kembali <span class="text-red-500">*</span></label><input type="date" id="tanggalKembali" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
                     <div><label class="block text-xs font-semibold mb-1">Jumlah <span class="text-red-500">*</span></label><input type="number" id="jumlahBooking" value="1" min="1" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
                 </div>

@@ -59,6 +59,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_barang' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
+            'deskripsi' => 'nullable|string',
             'stok' => 'required|integer',
             'harga_sewa' => 'required|numeric',
             'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -67,9 +68,11 @@ class AdminController extends Controller
         $data = [
             'nama_barang' => $request->nama_barang,
             'kategori' => $request->kategori,
+            'deskripsi' => $request->deskripsi,
             'stok' => $request->stok,
             'harga_sewa' => $request->harga_sewa,
         ];
+
 
         // Memproses pengunggahan file foto
         if ($request->hasFile('foto')) {
@@ -93,6 +96,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_barang' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
+            'deskripsi' => 'nullable|string',
             'stok' => 'required|integer',
             'harga_sewa' => 'required|numeric',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -103,6 +107,7 @@ class AdminController extends Controller
         $data = [
             'nama_barang' => $request->nama_barang,
             'kategori' => $request->kategori,
+            'deskripsi' => $request->deskripsi,
             'stok' => $request->stok,
             'harga_sewa' => $request->harga_sewa,
         ];

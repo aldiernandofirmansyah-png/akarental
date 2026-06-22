@@ -14,7 +14,7 @@
         
         /* Background khusus untuk Hero Section (atas) */
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ asset('images/background_landing.jpg') }}') no-repeat center center;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("{{ asset('images/latar.jpeg') }}") no-repeat center center;
             background-size: cover;
         }
         
@@ -84,7 +84,7 @@
         <div class="container mx-auto px-6 text-center relative z-10">
             <div class="max-w-4xl mx-auto fade-in-up">
                 <div class="inline-block bg-white/20 backdrop-blur rounded-full px-4 py-1 mb-6">
-                    <span class="text-sm font-semibold text-purple-300">Selamat Datang di AKA Rental!</span>
+                    <span class="text-sm font-semibold text-white-300">Selamat Datang di AKA Rental!</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
                     Sewa Kamera & 

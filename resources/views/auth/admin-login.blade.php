@@ -10,7 +10,10 @@
     <style>
         body { font-family: 'Inter', sans-serif; font-size: 1.05rem; }
         .admin-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-image: url("{{ asset('images/latar.jpeg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
     </style>
 </head>
@@ -18,10 +21,7 @@
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in">
         <div class="p-8 md:p-10">
             <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4">
-                    <i class="fas fa-user-shield text-white text-3xl"></i>
-                </div>
-                <h1 class="text-3xl font-black text-gray-800 tracking-tighter">ADMIN LOGIN</h1>
+                <h1 class="text-3xl font-black text-gray-800 tracking-tighter">ADMIN AKARENTAL</h1>
                 <p class="text-gray-500 mt-2 font-medium">Khusus Pengelola AKA Rental</p>
             </div>
 

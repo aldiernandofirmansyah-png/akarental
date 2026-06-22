@@ -147,7 +147,15 @@
                 {{-- Menu Sidebar --}}
                 <div class="mb-4 px-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Navigasi Utama</div>
                 <ul class="space-y-2">
-                    @yield('sidebar_menu')
+                    @if(Auth::user()->role === 'admin')
+                        <li><a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('admin.dashboard') ? 'sidebar-active' : '' }}"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
+                        <li><a href="{{ route('admin.manajemen_barang') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('admin.manajemen_barang') ? 'sidebar-active' : '' }}"><i class="fas fa-boxes mr-3"></i> Manajemen Barang</a></li>
+                        <li><a href="{{ route('admin.konfirmasi_booking') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('admin.konfirmasi_booking') ? 'sidebar-active' : '' }}"><i class="fas fa-calendar-check mr-3"></i> Konfirmasi Booking</a></li>
+                        <li><a href="{{ route('admin.riwayat_sewa') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('admin.riwayat_sewa') ? 'sidebar-active' : '' }}"><i class="fas fa-history mr-3"></i> Riwayat Sewa</a></li>
+                    @else
+                        {{-- Menu Pelanggan (Tetap) --}}
+                        @yield('sidebar_menu')
+                    @endif
                 </ul>
 
                 <div class="mt-10 pt-6 border-t border-gray-50">

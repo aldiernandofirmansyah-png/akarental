@@ -18,16 +18,17 @@
 @section('title', 'Dashboard Pelanggan')
 
 @section('sidebar_menu')
-<li><a href="/pelanggan/dashboard" onclick="showPelangganDashboard()" class="block px-4 py-3 rounded-lg sidebar-active"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
-<li><a href="/pelanggan/riwayat-sewa" onclick="showPelangganRiwayat()" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition"><i class="fas fa-history mr-3"></i> Riwayat Sewa</a></li>
+<li><a href="{{ route('pelanggan.dashboard') }}" class="block px-4 py-3 rounded-lg sidebar-active"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
+<li><a href="{{ route('pelanggan.riwayat_sewa') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium"><i class="fas fa-history mr-3"></i> Riwayat Sewa</a></li>
 @endsection
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 {{-- ==================== SAPAAN USER ==================== --}}
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-camera text-purple-600 mr-2"></i>Dashboard Pelanggan</h1>
-    <p class="text-purple-600 font-bold mt-1"><i class="fas fa-user-circle mr-1"></i> Selamat Datang, Pelanggan User</p>
+    <p class="text-purple-600 font-bold mt-1"><i class="fas fa-user-circle mr-1"></i> Selamat Datang, {{ auth()->user()->name }}</p>
 </div>
 
 {{-- ==================== FILTER ==================== --}}
@@ -54,8 +55,7 @@
         </div>
     </div>
     <div class="flex gap-3 mt-4">
-        <button onclick="filterBarang()" class="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700"><i class="fas fa-search mr-1"></i> Cari</button>
-        <button onclick="resetFilter()" class="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600"><i class="fas fa-undo mr-1"></i> Reset</button>
+        <button onclick="resetFilter()" class="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600"><i class="fas fa-undo mr-1"></i> Reset Filter</button>
     </div>
 </div>
 
@@ -80,13 +80,13 @@
                 <div class="text-center">
                     @if($barang->kategori == 'Kamera')
                         <i class="fas fa-camera text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @elseif($barang->kategori == 'Alat Camping')
                         <i class="fas fa-campground text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @else
                         <i class="fas fa-gift text-5xl text-gray-400"></i>
-                        <p class="text-xs text-gray-400 mt-2">No Image</p>
+                        <p class="text-xs text-gray-400 mt-2">Tidak Ada Gambar</p>
                     @endif
                 </div>
             @endif
@@ -159,9 +159,9 @@
             <div class="bg-gray-50 rounded-lg p-3 mb-4">
                 <p class="text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-user mr-1"></i> Data Diri Pelanggan</p>
                 <div class="space-y-3">
-                    <div><label class="block text-xs font-semibold mb-1">Nama Lengkap <span class="text-red-500">*</span></label><input type="text" id="pelangganNama" placeholder="Masukkan nama lengkap" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
-                    <div><label class="block text-xs font-semibold mb-1">Email <span class="text-red-500">*</span></label><input type="email" id="pelangganEmail" placeholder="email@example.com" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
-                    <div><label class="block text-xs font-semibold mb-1">No. Handphone (WhatsApp) <span class="text-red-500">*</span></label><input type="tel" id="pelangganNoHp" placeholder="081234567890" class="w-full border rounded-lg px-3 py-2 text-sm" required></div>
+                    <div><label class="block text-xs font-semibold mb-1">Nama Lengkap</label><input type="text" value="{{ auth()->user()->name }}" class="w-full border rounded-lg px-3 py-2 text-sm bg-gray-100 cursor-not-allowed" readonly></div>
+                    <div><label class="block text-xs font-semibold mb-1">Email</label><input type="email" value="{{ auth()->user()->email }}" class="w-full border rounded-lg px-3 py-2 text-sm bg-gray-100 cursor-not-allowed" readonly></div>
+                    <div><label class="block text-xs font-semibold mb-1">No. Handphone (WhatsApp) <span class="text-red-500">*</span></label><input type="tel" id="bookingNoTelp" value="{{ auth()->user()->no_telp }}" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: 08123456789" required></div>
                 </div>
             </div>
             
@@ -202,68 +202,68 @@
             </div>
             
             {{-- Total Biaya --}}
-            <div class="bg-purple-50 rounded-lg p-3 mb-4">
-                <div class="flex justify-between items-center">
-                    <span class="font-semibold">Total Biaya Sewa:</span>
-                    <span class="text-2xl font-bold text-purple-600" id="totalBiayaBooking">Rp 0</span>
+            <div class="bg-purple-50 rounded-2xl p-4 mb-4 border border-purple-100">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-gray-600">Total Sewa:</span>
+                    <span class="text-lg font-bold text-gray-800" id="totalBiayaBooking">Rp 0</span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">*Pembayaran dapat dilakukan saat mengambil barang di toko</p>
+                <div class="flex justify-between items-center mb-2 p-2 bg-yellow-100/50 rounded-lg border border-yellow-200">
+                    <span class="text-sm font-bold text-yellow-700">Wajib DP (30%):</span>
+                    <span class="text-lg font-extrabold text-yellow-700" id="dpAmount">Rp 0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-medium text-gray-500">Sisa Bayar di Toko:</span>
+                    <span class="text-sm font-bold text-gray-600" id="sisaBayar">Rp 0</span>
+                </div>
+                <p class="text-[10px] text-gray-500 mt-3 italic">*Booking dianggap valid setelah bukti transfer DP dikirim ke Admin.</p>
             </div>
             
             <div class="flex gap-3">
-                <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700"><i class="fas fa-check-circle mr-1"></i> Konfirmasi Booking</button>
-                <button type="button" onclick="closeModal('bookingModal')" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400">Batal</button>
+                <button type="submit" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"><i class="fas fa-check-circle mr-1"></i> Lanjut Pembayaran</button>
+                <button type="button" onclick="closeModal('bookingModal')" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">Batal</button>
             </div>
         </form>
     </div>
 </div>
 
 {{-- ==================== MODAL KONFIRMASI BOOKING ==================== --}}
-<div id="konfirmasiModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold"><i class="fas fa-check-circle text-green-600 mr-2"></i>Booking Berhasil!</h2>
-            <button onclick="closeModal('konfirmasiModal')" class="text-gray-400 text-2xl">&times;</button>
+<div id="konfirmasiModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+        <div class="bg-emerald-600 px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white flex items-center">
+                <i class="fas fa-clock mr-3"></i> Menunggu DP
+            </h2>
+            <button onclick="closeModal('konfirmasiModal')" class="text-white/80 hover:text-white text-2xl">&times;</button>
         </div>
         
-        <div class="space-y-4">
-            <div class="bg-green-50 rounded-lg p-4 text-center">
-                <i class="fas fa-calendar-check text-green-600 text-5xl mb-2"></i>
-                <p class="font-semibold text-green-700">Booking Anda telah kami terima!</p>
+        <div class="p-6 space-y-4">
+            <div class="text-center">
+                <p class="text-sm text-gray-600">Silakan transfer DP untuk mengamankan barang Anda:</p>
+                <h3 class="text-3xl font-black text-emerald-600 mt-2" id="detailDP">Rp 0</h3>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Barang:</span> <span id="detailBarang" class="font-bold"></span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Total Sewa:</span> <span id="detailTotal" class="font-bold"></span></div>
+                <div class="flex justify-between border-t pt-2 mt-2"><span class="text-gray-500">Sisa Pelunasan:</span> <span id="detailSisa" class="font-bold text-gray-700"></span></div>
             </div>
             
-            <div class="bg-gray-50 rounded-lg p-4">
-                <p class="text-sm font-semibold mb-2">Rincian Booking:</p>
-                <p><span class="text-gray-500">Barang:</span> <span id="detailBarang"></span></p>
-                <p><span class="text-gray-500">Nama:</span> <span id="detailNama"></span></p>
-                <p><span class="text-gray-500">No. HP:</span> <span id="detailNoHp"></span></p>
-                <p><span class="text-gray-500">Tanggal Sewa:</span> <span id="detailTglMulai"></span> - <span id="detailTglKembali"></span></p>
-                <p><span class="text-gray-500">Total Bayar:</span> <span id="detailTotal" class="font-bold text-green-600"></span></p>
-            </div>
-            
-            {{-- Informasi Pembayaran --}}
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                <p class="text-sm font-semibold text-purple-700 mb-2"><i class="fas fa-credit-card mr-1"></i> Metode Pembayaran</p>
-                <div class="space-y-2 text-sm">
-                    <div class="flex items-center gap-2"><i class="fas fa-money-bill-wave text-green-600"></i><span><span class="font-semibold">Tunai:</span> Bayar langsung saat mengambil barang</span></div>
-                    <div class="flex items-center gap-2"><i class="fas fa-qrcode text-blue-600"></i><span><span class="font-semibold">QRIS:</span> Scan QR code (OVO, DANA, ShopeePay, dll)</span></div>
-                    <div class="flex items-center gap-2"><i class="fas fa-university text-red-600"></i><span><span class="font-semibold">Transfer Bank:</span> BCA 8210914073 a.n AKA Rental</span></div>
+            <div class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                <p class="text-xs font-bold text-blue-700 mb-2 uppercase tracking-wider">Transfer Ke:</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-bold text-gray-800">BCA 8210914073</p>
+                        <p class="text-xs text-gray-500">a.n AKA Rental (Aldi)</p>
+                    </div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1200px-Bank_Central_Asia.svg.png" class="h-4">
                 </div>
-                <p class="text-xs text-gray-500 mt-2">*Pembayaran dilakukan saat mengambil barang di toko</p>
             </div>
             
-            <div class="bg-blue-50 rounded-lg p-4">
-                <p class="text-sm font-semibold text-blue-700"><i class="fas fa-store mr-1"></i> Pengambilan Barang</p>
-                <p class="text-sm mt-1">Silakan datang ke toko kami:</p>
-                <p class="font-semibold mt-2">📍 Jl. Perkasa Blok 2 No.18 (Jodoh dekat rumah Kepin)</p>
-                <p class="text-sm">⏰ Jam Operasional: 08.00 - 20.00 WIB</p>
-                <p class="text-sm mt-2">📌 Jangan lupa membawa KTP asli untuk jaminan!</p>
-            </div>
+            <a href="#" id="whatsappLink" target="_blank" class="block w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 text-center shadow-lg shadow-green-200 transition-all">
+                <i class="fab fa-whatsapp mr-2 text-lg"></i> Kirim Bukti Transfer
+            </a>
             
-            {{-- Tombol WhatsApp --}}
-            <a href="#" id="whatsappLink" target="_blank" class="block w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 text-center"><i class="fab fa-whatsapp mr-1"></i> Konfirmasi ke Admin via WhatsApp</a>
-            
-            <button onclick="closeModal('konfirmasiModal')" class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400">Tutup</button>
+            <p class="text-[10px] text-center text-gray-400 font-medium">Pesanan akan dibatalkan otomatis jika DP tidak dibayar dalam 1 jam.</p>
         </div>
     </div>
 </div>
@@ -272,6 +272,7 @@
 <script>
 let currentHarga = 0;
 let currentBarangNama = '';
+const DP_PERCENT = 0.3; // 30% DP
 
 function openBookingModal(id, nama, harga) {
     document.getElementById('bookingBarangId').value = id;
@@ -280,9 +281,17 @@ function openBookingModal(id, nama, harga) {
     currentHarga = harga;
     currentBarangNama = nama;
     
-    document.getElementById('pelangganNama').value = '';
-    document.getElementById('pelangganEmail').value = '';
-    document.getElementById('pelangganNoHp').value = '';
+    // Set minimum date to today
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let minDate = yyyy + '-' + mm + '-' + dd;
+    
+    document.getElementById('tanggalMulai').setAttribute('min', minDate);
+    document.getElementById('tanggalKembali').setAttribute('min', minDate);
+    
+    // Reset inputs
     document.getElementById('tanggalMulai').value = '';
     document.getElementById('tanggalKembali').value = '';
     document.getElementById('jumlahBooking').value = '1';
@@ -292,62 +301,135 @@ function openBookingModal(id, nama, harga) {
 }
 
 function hitungTotal() {
-    let mulai = document.getElementById('tanggalMulai').value;
-    let kembali = document.getElementById('tanggalKembali').value;
+    let mulaiInput = document.getElementById('tanggalMulai');
+    let kembaliInput = document.getElementById('tanggalKembali');
+    let mulai = mulaiInput.value;
+    let kembali = kembaliInput.value;
+    
+    // Pastikan tanggal kembali tidak sebelum tanggal mulai
+    if (mulai) {
+        kembaliInput.setAttribute('min', mulai);
+    }
+
     let jumlah = parseInt(document.getElementById('jumlahBooking').value) || 1;
-    let totalSewa = 0;
+    let totalSewa = currentHarga * jumlah;
     
     if(mulai && kembali) {
-        let hari = Math.ceil((new Date(kembali) - new Date(mulai)) / (1000 * 60 * 60 * 24));
+        let diffTime = new Date(kembali) - new Date(mulai);
+        let hari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if(hari > 0) {
             totalSewa = hari * currentHarga * jumlah;
-        } else {
-            totalSewa = currentHarga * jumlah;
+        } else if (hari === 0) {
+            totalSewa = 1 * currentHarga * jumlah; // Minimal 1 hari
         }
-    } else {
-        totalSewa = currentHarga;
     }
     
-    document.getElementById('totalBiayaBooking').innerText = 'Rp ' + totalSewa.toLocaleString('id-ID');
+    let dpAmount = totalSewa * DP_PERCENT;
+    let sisaBayar = totalSewa - dpAmount;
+    
+    document.getElementById('totalBiayaBooking').innerText = 'Rp ' + Math.round(totalSewa).toLocaleString('id-ID');
+    document.getElementById('dpAmount').innerText = 'Rp ' + Math.round(dpAmount).toLocaleString('id-ID');
+    document.getElementById('sisaBayar').innerText = 'Rp ' + Math.round(sisaBayar).toLocaleString('id-ID');
 }
 
 function bookingSelesai() {
-    let nama = document.getElementById('pelangganNama').value;
-    let email = document.getElementById('pelangganEmail').value;
-    let noHp = document.getElementById('pelangganNoHp').value;
+    let barangId = document.getElementById('bookingBarangId').value;
     let mulai = document.getElementById('tanggalMulai').value;
     let kembali = document.getElementById('tanggalKembali').value;
+    let jumlah = document.getElementById('jumlahBooking').value;
+    let noTelp = document.getElementById('bookingNoTelp').value;
     
-    if(!nama || !email || !noHp || !mulai || !kembali) {
-        alert('Harap isi semua field yang wajib diisi!');
+    if(!mulai || !kembali) {
+        alert('Harap isi tanggal sewa!');
         return;
     }
-    
-    document.getElementById('detailBarang').innerText = currentBarangNama;
-    document.getElementById('detailNama').innerText = nama;
-    document.getElementById('detailNoHp').innerText = noHp;
-    document.getElementById('detailTglMulai').innerText = mulai;
-    document.getElementById('detailTglKembali').innerText = kembali;
-    document.getElementById('detailTotal').innerText = document.getElementById('totalBiayaBooking').innerText;
-    
-    let pesanWA = `Halo Admin, saya ingin konfirmasi booking saya:%0A%0A` +
-                  `📌 Nama: ${nama}%0A` +
-                  `📞 No. HP: ${noHp}%0A` +
-                  `📦 Barang: ${currentBarangNama}%0A` +
-                  `📅 Tanggal Sewa: ${mulai} - ${kembali}%0A` +
-                  `💰 Total: ${document.getElementById('totalBiayaBooking').innerText}%0A%0A` +
-                  `Mohon dikonfirmasi ya. Terima kasih.`;
-    
-    let waLink = `https://wa.me/6281234567890?text=${pesanWA}`;
-    document.getElementById('whatsappLink').href = waLink;
-    
-    closeModal('bookingModal');
-    openModal('konfirmasiModal');
+
+    if(!noTelp) {
+        alert('Harap isi nomor WhatsApp!');
+        return;
+    }
+
+    // Tampilkan loading state jika perlu
+    const submitBtn = document.querySelector('#bookingModal button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...';
+
+    // Kirim data ke server via AJAX
+    fetch('{{ route("pelanggan.booking.store") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            barang_id: barangId,
+            tanggal_mulai: mulai,
+            tanggal_kembali: kembali,
+            jumlah: jumlah,
+            no_telp: noTelp
+        })
+    })
+    .then(async response => {
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message || 'Terjadi kesalahan pada server');
+        }
+        return data;
+    })
+    .then(data => {
+        if(data.success) {
+            let totalSewaTxt = 'Rp ' + Math.round(data.total_biaya).toLocaleString('id-ID');
+            let dpTxt = 'Rp ' + Math.round(data.dp_amount).toLocaleString('id-ID');
+            let sisaTxt = 'Rp ' + Math.round(data.sisa_bayar).toLocaleString('id-ID');
+
+            document.getElementById('detailBarang').innerText = currentBarangNama;
+            document.getElementById('detailTotal').innerText = totalSewaTxt;
+            document.getElementById('detailDP').innerText = dpTxt;
+            document.getElementById('detailSisa').innerText = sisaTxt;
+            
+            let pesanWA = `Halo Admin AKA Rental,%0A%0A` +
+                          `Saya ingin konfirmasi booking (ID: #AK${1000 + data.booking_id}):%0A` +
+                          `----------------------------------%0A` +
+                          `👤 Nama: {{ auth()->user()->name }}%0A` +
+                          `📞 No. WA: ${noTelp}%0A` +
+                          `📦 Barang: ${currentBarangNama}%0A` +
+                          `📅 Periode: ${mulai} s/d ${kembali}%0A` +
+                          `💰 Total Sewa: ${totalSewaTxt}%0A` +
+                          `💳 *Wajib DP (30%): ${dpTxt}*%0A` +
+                          `💵 Sisa Bayar: ${sisaTxt}%0A` +
+                          `----------------------------------%0A%0A` +
+                          `Saya akan segera mengirimkan bukti transfer DP ke BCA 8210914073 a.n AKA Rental. Mohon dicek ya!`;
+            
+            document.getElementById('whatsappLink').href = `https://wa.me/6282170244177?text=${pesanWA}`;
+            
+            closeModal('bookingModal');
+            openModal('konfirmasiModal');
+        } else {
+            alert('Gagal membuat booking: ' + (data.message || 'Silakan coba lagi.'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal: ' + error.message);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+    });
 }
 
 document.getElementById('tanggalMulai')?.addEventListener('change', hitungTotal);
 document.getElementById('tanggalKembali')?.addEventListener('change', hitungTotal);
 document.getElementById('jumlahBooking')?.addEventListener('change', hitungTotal);
+
+function resetFilter() {
+    document.getElementById('kategoriFilter').value = 'semua';
+    document.getElementById('paketFilter').value = 'semua';
+    document.getElementById('cariBarang').value = '';
+    filterBarang();
+}
 
 function filterBarang() {
     let kategori = document.getElementById('kategoriFilter').value;
@@ -362,8 +444,13 @@ function filterBarang() {
         let tipePaket = item.getAttribute('data-paket');
         let tampil = true;
         
+        // Filter Kategori
         if(kategori !== 'semua' && kat !== kategori) tampil = false;
+        
+        // Filter Paket
         if(paket === 'paket' && tipePaket !== 'paket') tampil = false;
+        
+        // Filter Pencarian Nama
         if(cari && !nama.includes(cari)) tampil = false;
         
         item.style.display = tampil ? 'block' : 'none';
@@ -373,15 +460,13 @@ function filterBarang() {
     document.getElementById('emptyMessage').style.display = ada ? 'none' : 'block';
 }
 
-function resetFilter() {
-    document.getElementById('kategoriFilter').value = 'semua';
-    document.getElementById('paketFilter').value = 'semua';
-    document.getElementById('cariBarang').value = '';
-    document.querySelectorAll('#barangGrid > div').forEach(item => item.style.display = 'block');
-    document.getElementById('emptyMessage').style.display = 'none';
-}
+// Tambahkan event listener agar pencarian bisa dilakukan sambil mengetik (real-time)
+document.getElementById('cariBarang')?.addEventListener('keyup', filterBarang);
+document.getElementById('kategoriFilter')?.addEventListener('change', filterBarang);
+document.getElementById('paketFilter')?.addEventListener('change', filterBarang);
 
-function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+// Gunakan fungsi dari layout agar tidak bentrok
+// function openModal(id) { ... }
+// function closeModal(id) { ... }
 </script>
 @endsection

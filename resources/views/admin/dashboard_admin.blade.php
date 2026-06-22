@@ -26,6 +26,11 @@
         <p class="text-sm font-bold text-gray-500 uppercase">Total Pendapatan</p>
         <p class="text-xl font-black text-emerald-600">Rp{{ number_format($totalPendapatan, 0, ',', '.') }}</p>
     </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 card-hover">
+        <div class="text-gray-400 mb-2"><i class="fas fa-exclamation-triangle text-2xl"></i></div>
+        <p class="text-sm font-bold text-gray-500 uppercase">Total Denda Terkumpul</p>
+        <p class="text-xl font-black text-red-600">Rp{{ number_format(\App\Models\Sewa::where('status_sewa', 'Selesai')->sum('denda'), 0, ',', '.') }}</p>
+    </div>
 </div>
 
 {{-- Statistik Kategori --}}

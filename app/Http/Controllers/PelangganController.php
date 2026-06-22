@@ -26,7 +26,7 @@ class PelangganController extends Controller
     {
         $request->validate([
             'barang_id' => 'required|exists:barangs,id',
-            'tanggal_mulai' => 'required|date',
+            'tanggal_mulai' => 'required|date|after:today',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_mulai',
             'jumlah' => 'required|integer|min:1',
             'no_telp' => 'required|string|max:20',

@@ -281,11 +281,12 @@ function openBookingModal(id, nama, harga) {
     currentHarga = harga;
     currentBarangNama = nama;
     
-    // Set minimum date to today
-    let today = new Date();
-    let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = today.getFullYear();
+    // Set minimum date to tomorrow
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    let dd = String(tomorrow.getDate()).padStart(2, '0');
+    let mm = String(tomorrow.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = tomorrow.getFullYear();
     let minDate = yyyy + '-' + mm + '-' + dd;
     
     document.getElementById('tanggalMulai').setAttribute('min', minDate);

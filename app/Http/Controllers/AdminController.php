@@ -26,7 +26,10 @@ class AdminController extends Controller
         $totalKamera = $barangs->where('kategori', 'Kamera')->count();
         $totalCamping = $barangs->where('kategori', 'Alat Camping')->count();
         $totalPaket = $barangs->where('kategori', 'Paket')->count();
-        $totalPelanggan = User::where('role', 'pelanggan')->count();
+        
+        // Hitung pelanggan yang memiliki sewa status 'Aktif'
+        $totalPelanggan = Sewa::where('status_sewa', 'Aktif')->distinct('user_id')->count('user_id');
+        
         $totalPendapatan = Sewa::where('status_sewa', 'Selesai')->sum('total_biaya');
         
         // Mengambil data sewa yang sedang aktif untuk ditampilkan

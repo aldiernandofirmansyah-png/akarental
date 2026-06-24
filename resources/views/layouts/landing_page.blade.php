@@ -59,7 +59,6 @@
     <nav class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                {{-- Logo --}}
                 <div class="flex items-center space-x-3">
                     <div>
                         <span class="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">AKA Rental</span>
@@ -129,7 +128,7 @@
                         <span class="text-4xl">📸</span>
                     </div>
                     <h3 class="text-2xl font-bold mb-3">Kamera</h3>
-                    <p class="text-gray-600">Kamera DSLR & Mirrorless dengan lensa lengkap dan kualitas tinggi untuk hasil memukau.</p>
+                    <p class="text-gray-600">Kamera dengan lensa lengkap dan kualitas tinggi untuk hasil memukau.</p>
                 </div>
                 <div class="card-hover bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-8 text-center shadow-md border border-green-100/50">
                     <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -167,7 +166,6 @@
                     <div class="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-envelope text-2xl"></i></div>
                     <h3 class="text-xl font-bold mb-2">Email</h3>
                     <p>akarental@gmail.com</p>
-                    <p class="text-sm opacity-80">customer@akarental.com</p>
                 </div>
                 <div class="bg-white/20 backdrop-blur rounded-2xl p-6 text-center hover:bg-white/30 transition border border-white/10">
                     <div class="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-map-marker-alt text-2xl"></i></div>
@@ -183,7 +181,6 @@
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6 text-center">
             <p class="font-bold">&copy; 2026 AKA Rental - Sewa Kamera & Alat Camping.</p>
-            <p class="text-gray-400 text-sm mt-2">Didesain dengan ❤️ untuk mempermudah hobi dokumentasi dan petualangan Anda.</p>
         </div>
     </footer>
 
@@ -226,11 +223,11 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Lengkap</label>
-                        <input type="text" name="name" placeholder="Aldi Kepin" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
+                        <input type="text" name="name" placeholder="Nama lengkap anda" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Alamat Email</label>
-                        <input type="email" name="email" placeholder="aldi@gmail.com" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
+                        <input type="email" name="email" placeholder="alamat@email.com" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-green-500 outline-none transition-all" required>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>

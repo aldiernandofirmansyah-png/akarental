@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Filesystem Disk
+    | Disk Filesystem Default
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
+    | Di sini Anda dapat menentukan disk filesystem default yang harus digunakan
+    | oleh framework. Disk "local", serta berbagai disk berbasis cloud
+    | tersedia untuk aplikasi Anda untuk penyimpanan file.
     |
     */
 
@@ -17,14 +17,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Filesystem Disks
+    | Disk Filesystem
     |--------------------------------------------------------------------------
     |
-    | Below you may configure as many filesystem disks as necessary, and you
-    | may even configure multiple disks for the same driver. Examples for
-    | most supported storage drivers are configured here for reference.
+    | Di bawah ini Anda dapat mengonfigurasi sebanyak mungkin disk filesystem sesuai kebutuhan, dan
+    | Anda bahkan dapat mengonfigurasi beberapa disk untuk driver yang sama. Contoh untuk
+    | sebagian besar driver penyimpanan yang didukung dikonfigurasi di sini sebagai referensi.
     |
-    | Supported drivers: "local", "ftp", "sftp", "s3"
+    | Driver yang didukung: "local", "ftp", "sftp", "s3"
     |
     */
 
@@ -64,12 +64,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Symbolic Links
+    | Tautan Simbolik (Symbolic Links)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
+    | Di sini Anda dapat mengonfigurasi tautan simbolik yang akan dibuat saat
+    | perintah Artisan `storage:link` dijalankan. Kunci array harus berupa
+    | lokasi tautan dan nilai harus berupa targetnya.
     |
     */
 

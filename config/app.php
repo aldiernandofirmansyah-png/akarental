@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Name
+    | Nama Aplikasi
     |--------------------------------------------------------------------------
     |
-    | This value is the name of your application, which will be used when the
-    | framework needs to place the application's name in a notification or
-    | other UI elements where an application name needs to be displayed.
+    | Nilai ini adalah nama aplikasi Anda, yang akan digunakan ketika
+    | framework perlu menempatkan nama aplikasi dalam notifikasi atau
+    | elemen UI lainnya di mana nama aplikasi perlu ditampilkan.
     |
     */
 
@@ -17,12 +17,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Environment
+    | Lingkungan Aplikasi
     |--------------------------------------------------------------------------
     |
-    | This value determines the "environment" your application is currently
-    | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | Nilai ini menentukan "lingkungan" tempat aplikasi Anda saat ini
+    | berjalan. Ini mungkin menentukan bagaimana Anda lebih suka mengonfigurasi
+    | berbagai layanan yang digunakan aplikasi. Atur ini di file ".env" Anda.
     |
     */
 
@@ -30,12 +30,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Debug Mode
+    | Mode Debug Aplikasi
     |--------------------------------------------------------------------------
     |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
+    | Ketika aplikasi Anda dalam mode debug, pesan kesalahan terperinci dengan
+    | pelacakan tumpukan (stack trace) akan ditampilkan pada setiap kesalahan yang
+    | terjadi dalam aplikasi Anda. Jika dinonaktifkan, halaman kesalahan umum
+    | yang sederhana akan ditampilkan.
     |
     */
 

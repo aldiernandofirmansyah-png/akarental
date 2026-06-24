@@ -4,13 +4,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Mailer
+    | Mailer Default
     |--------------------------------------------------------------------------
     |
-    | This option controls the default mailer that is used to send all email
-    | messages unless another mailer is explicitly specified when sending
-    | the message. All additional mailers can be configured within the
-    | "mailers" array. Examples of each type of mailer are provided.
+    | Opsi ini mengontrol mailer default yang digunakan untuk mengirim semua pesan
+    | email kecuali mailer lain ditentukan secara eksplisit saat mengirim
+    | pesan. Semua mailer tambahan dapat dikonfigurasi dalam
+    | array "mailers". Contoh dari setiap jenis mailer disediakan.
     |
     */
 
@@ -18,18 +18,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Mailer Configurations
+    | Konfigurasi Mailer
     |--------------------------------------------------------------------------
     |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
+    | Di sini Anda dapat mengonfigurasi semua mailer yang digunakan oleh aplikasi Anda ditambah
+    | pengaturan masing-masing. Beberapa contoh telah dikonfigurasi untuk
+    | Anda dan Anda bebas untuk menambahkan milik Anda sendiri sesuai kebutuhan aplikasi.
     |
-    | Laravel supports a variety of mail "transport" drivers that can be used
-    | when delivering an email. You may specify which one you're using for
-    | your mailers below. You may also add additional mailers if needed.
+    | Laravel mendukung berbagai driver "transport" email yang dapat digunakan
+    | saat mengirim email. Anda dapat menentukan mana yang Anda gunakan untuk
+    | mailer Anda di bawah. Anda juga dapat menambahkan mailer tambahan jika diperlukan.
     |
-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+    | Didukung: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
     |            "postmark", "resend", "log", "array",
     |            "failover", "roundrobin"
     |
@@ -101,12 +101,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Global "From" Address
+    | Alamat "Dari" Global
     |--------------------------------------------------------------------------
     |
-    | You may wish for all emails sent by your application to be sent from
-    | the same address. Here you may specify a name and address that is
-    | used globally for all emails that are sent by your application.
+    | Anda mungkin ingin semua email yang dikirim oleh aplikasi Anda dikirim dari
+    | alamat yang sama. Di sini Anda dapat menentukan nama dan alamat yang
+    | digunakan secara global untuk semua email yang dikirim oleh aplikasi Anda.
     |
     */
 

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Menampilkan tampilan login.
      */
     public function create(): View
     {
@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Display the admin login view.
+     * Menampilkan tampilan login admin.
      */
     public function createAdmin(): View
     {
@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Menangani permintaan autentikasi masuk.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
+     * Menghancurkan sesi terautentikasi (Logout).
      */
     public function destroy(Request $request): RedirectResponse
     {

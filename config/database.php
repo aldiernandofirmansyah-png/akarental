@@ -6,13 +6,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Database Connection Name
+    | Nama Koneksi Database Default
     |--------------------------------------------------------------------------
     |
-    | Here you may specify which of the database connections below you wish
-    | to use as your default connection for database operations. This is
-    | the connection which will be utilized unless another connection
-    | is explicitly specified when you execute a query / statement.
+    | Di sini Anda dapat menentukan koneksi basis data mana di bawah ini yang ingin Anda
+    | gunakan sebagai koneksi default untuk operasi basis data. Ini adalah
+    | koneksi yang akan digunakan kecuali koneksi lain ditentukan secara eksplisit
+    | saat Anda menjalankan kueri / pernyataan.
     |
     */
 
@@ -20,12 +20,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Connections
+    | Koneksi Basis Data
     |--------------------------------------------------------------------------
     |
-    | Below are all of the database connections defined for your application.
-    | An example configuration is provided for each database system which
-    | is supported by Laravel. You're free to add / remove connections.
+    | Di bawah ini adalah semua koneksi basis data yang ditentukan untuk aplikasi Anda.
+    | Konfigurasi contoh disediakan untuk setiap sistem basis data yang
+    | didukung oleh Laravel. Anda bebas untuk menambah / menghapus koneksi.
     |
     */
 
@@ -109,20 +109,18 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
-            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Migration Repository Table
+    | Tabel Repositori Migrasi
     |--------------------------------------------------------------------------
     |
-    | This table keeps track of all the migrations that have already run for
-    | your application. Using this information, we can determine which of
-    | the migrations on disk haven't actually been run on the database.
+    | Tabel ini melacak semua migrasi yang telah dijalankan untuk
+    | aplikasi Anda. Menggunakan informasi ini, kami dapat menentukan migrasi mana
+    | yang ada di disk yang belum benar-benar dijalankan pada basis data.
     |
     */
 
@@ -133,12 +131,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Redis Databases
+    | Basis Data Redis
     |--------------------------------------------------------------------------
     |
-    | Redis is an open source, fast, and advanced key-value store that also
-    | provides a richer body of commands than a typical key-value system
-    | such as Memcached. You may define your connection settings here.
+    | Redis adalah penyimpanan key-value sumber terbuka, cepat, dan canggih yang juga
+    | menyediakan sekumpulan perintah yang lebih kaya daripada sistem key-value biasa
+    | seperti Memcached. Anda dapat menentukan pengaturan koneksi Anda di sini.
     |
     */
 

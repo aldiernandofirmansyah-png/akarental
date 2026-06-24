@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Queue Connection Name
+    | Nama Koneksi Antrean Default
     |--------------------------------------------------------------------------
     |
-    | Laravel's queue supports a variety of backends via a single, unified
-    | API, giving you convenient access to each backend using identical
-    | syntax for each. The default queue connection is defined below.
+    | Antrean Laravel mendukung berbagai backend melalui satu API yang terpadu,
+    | memberikan Anda akses yang nyaman ke setiap backend menggunakan sintaks
+    | yang identik untuk masing-masing. Koneksi antrean default didefinisikan di bawah.
     |
     */
 
@@ -17,14 +17,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Queue Connections
+    | Koneksi Antrean (Queue Connections)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the connection options for every queue backend
-    | used by your application. An example configuration is provided for
-    | each backend supported by Laravel. You're also free to add more.
+    | Di sini Anda dapat mengonfigurasi opsi koneksi untuk setiap backend antrean
+    | yang digunakan oleh aplikasi Anda. Contoh konfigurasi disediakan untuk
+    | setiap backend yang didukung oleh Laravel. Anda juga bebas menambahkan lebih banyak.
     |
-    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis",
+    | Driver: "sync", "database", "beanstalkd", "sqs", "redis",
     |          "deferred", "background", "failover", "null"
     |
     */
@@ -93,12 +93,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Job Batching
+    | Batching Pekerjaan (Job Batching)
     |--------------------------------------------------------------------------
     |
-    | The following options configure the database and table that store job
-    | batching information. These options can be updated to any database
-    | connection and table which has been defined by your application.
+    | Opsi berikut mengonfigurasi basis data dan tabel yang menyimpan informasi
+    | batching pekerjaan. Opsi ini dapat diperbarui ke koneksi basis data dan
+    | tabel apa pun yang telah ditentukan oleh aplikasi Anda.
     |
     */
 
@@ -109,14 +109,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Failed Queue Jobs
+    | Pekerjaan Antrean yang Gagal
     |--------------------------------------------------------------------------
     |
-    | These options configure the behavior of failed queue job logging so you
-    | can control how and where failed jobs are stored. Laravel ships with
-    | support for storing failed jobs in a simple file or in a database.
+    | Opsi ini mengonfigurasi perilaku logging pekerjaan antrean yang gagal sehingga Anda
+    | dapat mengontrol bagaimana dan di mana pekerjaan yang gagal disimpan. Laravel dilengkapi
+    | dengan dukungan untuk menyimpan pekerjaan yang gagal dalam file sederhana atau di basis data.
     |
-    | Supported drivers: "database-uuids", "dynamodb", "file", "null"
+    | Driver yang didukung: "database-uuids", "dynamodb", "file", "null"
     |
     */
 

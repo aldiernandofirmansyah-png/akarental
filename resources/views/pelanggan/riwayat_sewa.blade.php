@@ -16,8 +16,16 @@
 @section('title', 'Riwayat Sewa Saya | AKA Rental')
 
 @section('sidebar_menu')
-<li><a href="/pelanggan/dashboard" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
-<li><a href="/pelanggan/riwayat-sewa" class="block px-4 py-3 rounded-lg sidebar-active"><i class="fas fa-history mr-3"></i> Riwayat Sewa</a></li>
+<li>
+    <a href="{{ route('pelanggan.dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.dashboard') ? 'sidebar-active' : '' }}">
+        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+    </a>
+</li>
+<li>
+    <a href="{{ route('pelanggan.riwayat_sewa') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.riwayat_sewa') ? 'sidebar-active' : '' }}">
+        <i class="fas fa-history mr-3"></i> Riwayat Sewa
+    </a>
+</li>
 @endsection
 
 @section('content')

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 /**
- * Controller untuk mengelola fitur-fitur admin.
+ * Controller untuk mengelola fitur fitur admin.
  */
 class AdminController extends Controller
 {

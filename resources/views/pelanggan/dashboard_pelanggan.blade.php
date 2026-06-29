@@ -17,19 +17,6 @@
 
 @section('title', 'Dashboard Pelanggan')
 
-@section('sidebar_menu')
-<li>
-    <a href="{{ route('pelanggan.dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.dashboard') ? 'sidebar-active' : '' }}">
-        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
-    </a>
-</li>
-<li>
-    <a href="{{ route('pelanggan.riwayat_sewa') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.riwayat_sewa') ? 'sidebar-active' : '' }}">
-        <i class="fas fa-history mr-3"></i> Riwayat Sewa
-    </a>
-</li>
-@endsection
-
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -129,7 +116,7 @@
                 <span class="text-purple-600 font-bold text-xl">Rp {{ number_format($barang->harga_sewa,0,',','.') }}</span>
                 <span class="text-gray-500 text-sm">/hari</span>
             </div>
-            <button onclick="openBookingModal({{ $barang->id }}, '{{ $barang->nama_barang }}', {{ $barang->harga_sewa }})" 
+            <button onclick="openBookingModal('{{ $barang->id }}', '{{ addslashes($barang->nama_barang) }}', '{{ $barang->harga_sewa }}')" 
                 class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition {{ $barang->stok<1?'opacity-50 cursor-not-allowed':'' }}" 
                 {{ $barang->stok<1?'disabled':'' }}>
                 <i class="fas fa-calendar-check mr-1"></i> Booking

@@ -15,19 +15,6 @@
 
 @section('title', 'Riwayat Sewa Saya | AKA Rental')
 
-@section('sidebar_menu')
-<li>
-    <a href="{{ route('pelanggan.dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.dashboard') ? 'sidebar-active' : '' }}">
-        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
-    </a>
-</li>
-<li>
-    <a href="{{ route('pelanggan.riwayat_sewa') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium {{ request()->routeIs('pelanggan.riwayat_sewa') ? 'sidebar-active' : '' }}">
-        <i class="fas fa-history mr-3"></i> Riwayat Sewa
-    </a>
-</li>
-@endsection
-
 @section('content')
 
 {{-- ==================== HEADER SECTION ==================== --}}
@@ -110,9 +97,9 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($item->status_sewa == 'Aktif')
-                            <button onclick="window.location.href='{{ route('pelanggan.perpanjangan', $item->id) }}'" class="text-[10px] font-bold bg-purple-600 text-white px-3 py-1.5 rounded-lg hover:bg-purple-700 transition shadow-md shadow-purple-100">
+                            <a href="{{ route('pelanggan.perpanjangan', $item->id) }}" class="text-[10px] font-bold bg-purple-600 text-white px-3 py-1.5 rounded-lg hover:bg-purple-700 transition shadow-md shadow-purple-100">
                                 Perpanjang
-                            </button>
+                            </a>
                         @elseif($item->status_sewa == 'Booking')
                             <span class="text-[10px] text-blue-500 font-bold italic">Menunggu</span>
                         @else
